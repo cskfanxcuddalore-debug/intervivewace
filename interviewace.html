@@ -1,0 +1,3355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>InterviewAce – Practice. Improve. Get Hired.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a12;
+  --bg2: #12121f;
+  --bg3: #1a1a2e;
+  --card: rgba(255,255,255,0.04);
+  --card-border: rgba(255,255,255,0.08);
+  --glass: rgba(255,255,255,0.06);
+  --glass-border: rgba(255,255,255,0.12);
+  --accent: #7c5cbf;
+  --accent2: #5b8ef0;
+  --gold: #f5c842;
+  --green: #3dd68c;
+  --red: #f05c5c;
+  --text: #f0eeff;
+  --text2: #a09abe;
+  --text3: #5e5c7a;
+  --radius: 20px;
+  --radius-sm: 12px;
+  --nav-h: 68px;
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+#app {
+  width: 100%;
+  max-width: 430px;
+  height: 100vh;
+  height: 100dvh;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+/* ── SCREENS ── */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform 0.35s cubic-bezier(.4,0,.2,1), opacity 0.35s ease;
+  will-change: transform, opacity;
+}
+
+.screen.hidden { display: none; }
+.screen.slide-out-left { transform: translateX(-100%); opacity: 0; }
+.screen.slide-out-right { transform: translateX(100%); opacity: 0; }
+.screen.slide-in-right { animation: slideInRight 0.35s cubic-bezier(.4,0,.2,1) forwards; }
+.screen.slide-in-left { animation: slideInLeft 0.35s cubic-bezier(.4,0,.2,1) forwards; }
+.screen.fade-in { animation: fadeIn 0.4s ease forwards; }
+
+@keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes slideInLeft { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes fadeIn { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
+
+.scrollable {
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+.scrollable::-webkit-scrollbar { display: none; }
+
+/* ── TYPOGRAPHY ── */
+h1,h2,h3 { font-family: var(--font-display); }
+
+/* ── BUTTONS ── */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+  outline: none;
+  text-decoration: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.btn:active { transform: scale(0.96); }
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  color: #fff;
+  padding: 16px 24px;
+  width: 100%;
+  font-size: 16px;
+  box-shadow: 0 8px 24px rgba(124,92,191,0.35);
+}
+
+.btn-secondary {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  color: var(--text);
+  padding: 14px 20px;
+  width: 100%;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text2);
+  padding: 10px 16px;
+}
+
+.btn-icon {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  color: var(--text);
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.btn-gold {
+  background: linear-gradient(135deg, #f5c842, #e8a020);
+  color: #1a1200;
+  padding: 14px 20px;
+  box-shadow: 0 6px 20px rgba(245,200,66,0.3);
+}
+
+/* Ripple */
+.ripple { position: absolute; border-radius: 50%; background: rgba(255,255,255,0.2); transform: scale(0); animation: rippleAnim 0.5s linear; pointer-events: none; }
+@keyframes rippleAnim { to { transform: scale(4); opacity: 0; } }
+
+/* ── CARDS ── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 20px;
+  backdrop-filter: blur(12px);
+}
+
+/* ── NAV ── */
+.bottom-nav {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: var(--nav-h);
+  background: rgba(10,10,18,0.92);
+  border-top: 1px solid var(--card-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 100;
+  backdrop-filter: blur(20px);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text3);
+}
+
+.nav-item.active { color: var(--accent); }
+.nav-item .nav-icon { font-size: 22px; }
+.nav-item .nav-label { font-size: 11px; font-weight: 500; }
+
+/* ── HEADER ── */
+.screen-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  padding-top: calc(16px + env(safe-area-inset-top, 0));
+  background: var(--bg);
+  position: relative;
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.screen-header h2 {
+  flex: 1;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* ── INPUTS ── */
+.input-group { display: flex; flex-direction: column; gap: 8px; }
+.input-group label { font-size: 13px; color: var(--text2); font-weight: 500; letter-spacing: 0.5px; }
+input[type="text"], input[type="email"], input[type="password"], textarea, select {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  padding: 14px 16px;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s;
+  -webkit-appearance: none;
+}
+input:focus, textarea:focus { border-color: var(--accent); }
+textarea { resize: none; min-height: 120px; }
+::placeholder { color: var(--text3); }
+
+/* ── PROGRESS BARS ── */
+.progress-track {
+  background: rgba(255,255,255,0.08);
+  border-radius: 99px;
+  overflow: hidden;
+  height: 8px;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  transition: width 0.6s cubic-bezier(.4,0,.2,1);
+}
+
+/* ── BADGES ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.badge-gold { background: rgba(245,200,66,0.15); color: var(--gold); }
+.badge-green { background: rgba(61,214,140,0.15); color: var(--green); }
+.badge-purple { background: rgba(124,92,191,0.15); color: var(--accent); }
+.badge-blue { background: rgba(91,142,240,0.15); color: var(--accent2); }
+.badge-red { background: rgba(240,92,92,0.15); color: var(--red); }
+
+/* ── TAGS ── */
+.tag {
+  display: inline-flex;
+  padding: 5px 12px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid var(--card-border);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tag.active { border-color: var(--accent); color: var(--accent); background: rgba(124,92,191,0.1); }
+
+/* ── AVATAR ── */
+.avatar {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 20px;
+  color: #fff;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.avatar.lg { width: 80px; height: 80px; font-size: 28px; }
+
+/* ── NOTIFICATIONS ── */
+#notif-container {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 90%;
+  pointer-events: none;
+}
+
+.notif-toast {
+  background: rgba(26,26,46,0.95);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  backdrop-filter: blur(20px);
+  animation: notifIn 0.3s ease, notifOut 0.3s ease 2.7s forwards;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+.notif-toast .notif-icon { font-size: 22px; flex-shrink: 0; }
+.notif-toast .notif-text { font-size: 14px; font-weight: 500; }
+.notif-toast .notif-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+@keyframes notifIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes notifOut { to { transform: translateY(-20px); opacity: 0; } }
+
+/* ── COIN ANIMATION ── */
+.coin-pop {
+  position: absolute;
+  font-size: 24px;
+  animation: coinFly 1s ease forwards;
+  pointer-events: none;
+  z-index: 999;
+}
+@keyframes coinFly { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-80px) scale(0.5); opacity: 0; } }
+
+/* ── XP ANIMATION ── */
+.xp-pop {
+  position: absolute;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+  animation: xpFly 1s ease forwards;
+  pointer-events: none;
+  z-index: 999;
+  font-family: var(--font-display);
+}
+@keyframes xpFly { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-60px) scale(1.2); opacity: 0; } }
+
+/* ── ACHIEVEMENT POPUP ── */
+#achievement-popup {
+  position: absolute;
+  bottom: calc(var(--nav-h) + 16px);
+  left: 50%;
+  transform: translateX(-50%) translateY(120px);
+  z-index: 9990;
+  background: linear-gradient(135deg, #1a1240, #0f1a30);
+  border: 1px solid rgba(124,92,191,0.4);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  width: 90%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 12px 48px rgba(124,92,191,0.25);
+  transition: transform 0.5s cubic-bezier(.4,0,.2,1);
+}
+
+#achievement-popup.show { transform: translateX(-50%) translateY(0); }
+.ach-badge { font-size: 36px; }
+.ach-info h4 { font-size: 12px; color: var(--accent); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+.ach-info p { font-size: 15px; font-weight: 600; }
+
+/* ── SPLASH ── */
+#splash {
+  background: linear-gradient(160deg, #0a0a12 0%, #12103a 50%, #0a1520 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  z-index: 200;
+}
+
+.splash-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: particleFloat linear infinite;
+  opacity: 0.5;
+}
+
+@keyframes particleFloat {
+  0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+  10% { opacity: 0.5; }
+  90% { opacity: 0.5; }
+  100% { transform: translateY(-10vh) translateX(20px); opacity: 0; }
+}
+
+.splash-logo {
+  font-family: var(--font-display);
+  font-size: 48px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #fff 0%, var(--accent) 60%, var(--accent2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 12px;
+  animation: logoPulse 2s ease infinite;
+}
+
+@keyframes logoPulse { 0%,100% { filter: brightness(1); } 50% { filter: brightness(1.2); } }
+
+.splash-tagline {
+  color: var(--text2);
+  font-size: 16px;
+  margin-bottom: 60px;
+  letter-spacing: 0.5px;
+}
+
+.splash-icon {
+  font-size: 72px;
+  margin-bottom: 24px;
+  animation: float 3s ease infinite;
+}
+
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+
+.loading-dots {
+  display: flex;
+  gap: 8px;
+  margin-top: 40px;
+}
+
+.loading-dots span {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: dotBounce 1.2s ease infinite;
+}
+
+.loading-dots span:nth-child(2) { animation-delay: 0.2s; background: var(--accent2); }
+.loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes dotBounce { 0%,80%,100% { transform: scale(0.8); opacity: 0.5; } 40% { transform: scale(1.2); opacity: 1; } }
+
+/* ── AUTH ── */
+.auth-screen {
+  background: linear-gradient(160deg, #0a0a12 0%, #12103a 100%);
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+}
+
+.auth-logo {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #fff, var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.auth-title { font-size: 26px; font-weight: 700; }
+.auth-sub { font-size: 14px; color: var(--text2); }
+
+/* ── HOME DASHBOARD ── */
+#home {
+  background: var(--bg);
+  padding-top: env(safe-area-inset-top, 0);
+}
+
+.home-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  padding-bottom: calc(var(--nav-h) + 20px);
+}
+
+.home-content::-webkit-scrollbar { display: none; }
+
+.home-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding-top: 16px;
+}
+
+.home-greeting { font-size: 14px; color: var(--text2); margin-bottom: 4px; }
+.home-name { font-family: var(--font-display); font-size: 24px; font-weight: 700; }
+
+.stats-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: 14px 12px;
+  text-align: center;
+}
+
+.stat-card .stat-val {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.stat-card .stat-label {
+  font-size: 11px;
+  color: var(--text2);
+  margin-top: 4px;
+}
+
+.level-card {
+  background: linear-gradient(135deg, rgba(124,92,191,0.15), rgba(91,142,240,0.1));
+  border: 1px solid rgba(124,92,191,0.25);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.level-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.level-badge {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.quick-action-card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  color: inherit;
+}
+
+.quick-action-card:active { transform: scale(0.97); }
+.quick-action-card .qa-icon { font-size: 28px; margin-bottom: 10px; }
+.quick-action-card .qa-label { font-size: 13px; font-weight: 600; }
+.quick-action-card .qa-sub { font-size: 11px; color: var(--text2); margin-top: 3px; }
+
+.quick-action-card.featured {
+  background: linear-gradient(135deg, rgba(124,92,191,0.2), rgba(91,142,240,0.15));
+  border-color: rgba(124,92,191,0.3);
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+}
+
+.daily-challenge-card {
+  background: linear-gradient(135deg, rgba(245,200,66,0.1), rgba(232,160,32,0.08));
+  border: 1px solid rgba(245,200,66,0.2);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.streak-flame {
+  font-size: 32px;
+  animation: flamePulse 1.5s ease infinite;
+  display: inline-block;
+}
+
+@keyframes flamePulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1) rotate(-5deg); } }
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+/* ── ROLE SELECTION ── */
+#role-select {
+  background: var(--bg);
+}
+
+.roles-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 20px;
+  padding-bottom: calc(var(--nav-h) + 20px);
+}
+
+.role-card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 20px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.role-card:active { transform: scale(0.96); }
+.role-card.selected { border-color: var(--accent); background: rgba(124,92,191,0.1); }
+.role-card .role-icon { font-size: 36px; }
+.role-card .role-name { font-size: 13px; font-weight: 600; }
+.role-card .role-count { font-size: 11px; color: var(--text2); }
+
+/* ── DIFFICULTY ── */
+.diff-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px;
+}
+
+.diff-card {
+  background: var(--card);
+  border: 2px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.diff-card:active { transform: scale(0.98); }
+.diff-card.selected { border-color: var(--accent); background: rgba(124,92,191,0.08); }
+.diff-card .diff-icon { font-size: 40px; }
+.diff-card .diff-name { font-family: var(--font-display); font-size: 20px; font-weight: 700; }
+.diff-card .diff-desc { font-size: 13px; color: var(--text2); margin-top: 4px; }
+.diff-card .diff-xp { margin-left: auto; }
+
+/* ── INTERVIEW ── */
+#interview {
+  background: var(--bg);
+}
+
+.interview-header {
+  padding: 16px 20px;
+  background: var(--bg);
+  flex-shrink: 0;
+}
+
+.question-progress {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.q-counter { font-size: 13px; color: var(--text2); }
+.q-timer {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+}
+.q-timer.warning { color: var(--red); animation: timerPulse 1s ease infinite; }
+@keyframes timerPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+.interview-body {
+  flex: 1;
+  padding: 16px 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.interview-body::-webkit-scrollbar { display: none; }
+
+.question-type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.question-card {
+  background: linear-gradient(135deg, rgba(124,92,191,0.12), rgba(91,142,240,0.08));
+  border: 1px solid rgba(124,92,191,0.2);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+
+.question-text {
+  font-size: 17px;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.char-counter {
+  text-align: right;
+  font-size: 12px;
+  color: var(--text3);
+  margin-top: 6px;
+}
+
+.interview-actions {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 12px;
+  padding: 12px 20px;
+  padding-bottom: 20px;
+  flex-shrink: 0;
+}
+
+/* ── FEEDBACK ── */
+#feedback {
+  background: var(--bg);
+}
+
+.feedback-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+  padding-bottom: 24px;
+}
+
+.feedback-body::-webkit-scrollbar { display: none; }
+
+.score-ring {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.score-ring canvas { display: block; }
+
+.score-number {
+  font-family: var(--font-display);
+  font-size: 48px;
+  font-weight: 800;
+  margin-top: -8px;
+}
+
+.star-method-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.star-item {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.star-item .star-label { font-weight: 600; font-size: 14px; }
+.star-item .star-sub { font-size: 11px; color: var(--text2); }
+.star-item .star-check { font-size: 20px; margin-left: auto; }
+
+.feedback-section {
+  margin-bottom: 16px;
+}
+
+.feedback-section h4 {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text2);
+  margin-bottom: 10px;
+}
+
+.feedback-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  margin-bottom: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.feedback-item .fi-icon { font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+
+/* ── RESULTS ── */
+.results-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 24px;
+  text-align: center;
+}
+
+.results-emoji { font-size: 64px; margin-bottom: 16px; animation: resultBounce 0.6s ease; }
+@keyframes resultBounce { 0% { transform: scale(0); } 80% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+/* ── SHOP ── */
+#shop { background: var(--bg); }
+
+.shop-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 20px 20px;
+  padding-bottom: calc(var(--nav-h) + 20px);
+}
+.shop-body::-webkit-scrollbar { display: none; }
+
+.shop-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 12px 20px;
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+.shop-tabs::-webkit-scrollbar { display: none; }
+
+.shop-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.shop-item {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 18px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.shop-item:active { transform: scale(0.97); }
+.shop-item.owned { border-color: var(--green); background: rgba(61,214,140,0.05); }
+.shop-item.equipped { border-color: var(--gold); background: rgba(245,200,66,0.05); }
+.shop-item .item-icon { font-size: 36px; }
+.shop-item .item-name { font-size: 13px; font-weight: 600; }
+.shop-item .item-price { font-size: 13px; }
+
+.balance-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--card);
+  border-bottom: 1px solid var(--card-border);
+  flex-shrink: 0;
+}
+.balance-bar .b-label { font-size: 13px; color: var(--text2); }
+.balance-bar .b-amount { font-family: var(--font-display); font-size: 20px; font-weight: 700; }
+
+/* ── ACHIEVEMENTS ── */
+#achievements { background: var(--bg); }
+
+.ach-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+  padding-bottom: calc(var(--nav-h) + 20px);
+}
+.ach-body::-webkit-scrollbar { display: none; }
+
+.ach-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.ach-card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 18px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.ach-card.unlocked { border-color: rgba(245,200,66,0.4); background: rgba(245,200,66,0.05); }
+.ach-card.locked { filter: grayscale(0.7); opacity: 0.5; }
+.ach-card .ach-emoji { font-size: 32px; }
+.ach-card .ach-name { font-size: 12px; font-weight: 600; }
+.ach-card .ach-desc { font-size: 11px; color: var(--text2); }
+
+/* ── STATS ── */
+#stats { background: var(--bg); }
+
+.stats-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+  padding-bottom: calc(var(--nav-h) + 20px);
+}
+.stats-body::-webkit-scrollbar { display: none; }
+
+.stat-big-card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.stat-big-icon { font-size: 36px; }
+.stat-big-val { font-family: var(--font-display); font-size: 28px; font-weight: 800; }
+.stat-big-label { font-size: 13px; color: var(--text2); margin-top: 2px; }
+
+.chart-card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.chart-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+
+/* ── PROFILE ── */
+#profile { background: var(--bg); }
+
+.profile-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+  padding-bottom: calc(var(--nav-h) + 20px);
+}
+.profile-body::-webkit-scrollbar { display: none; }
+
+.profile-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 0;
+  text-align: center;
+}
+
+.profile-name { font-family: var(--font-display); font-size: 24px; font-weight: 700; }
+.profile-level { font-size: 14px; color: var(--text2); }
+
+.profile-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+/* ── LEADERBOARD ── */
+.leaderboard-list { display: flex; flex-direction: column; gap: 10px; }
+
+.lb-item {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.lb-item.you { border-color: rgba(124,92,191,0.4); background: rgba(124,92,191,0.08); }
+.lb-rank { font-family: var(--font-display); font-size: 18px; font-weight: 800; color: var(--text2); min-width: 28px; }
+.lb-rank.gold { color: var(--gold); }
+.lb-rank.silver { color: #a8a9ad; }
+.lb-rank.bronze { color: #cd7f32; }
+.lb-name { flex: 1; font-weight: 600; font-size: 14px; }
+.lb-xp { font-size: 13px; color: var(--text2); }
+
+/* ── QUESTION BANK ── */
+.qb-card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.qb-card:active { transform: scale(0.98); }
+.qb-card .qb-q { font-size: 14px; line-height: 1.5; margin-bottom: 8px; }
+.qb-card .qb-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* ── SEARCH ── */
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  margin-bottom: 16px;
+}
+
+.search-bar input {
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 15px;
+  flex: 1;
+  outline: none;
+  padding: 0;
+}
+
+.search-icon { color: var(--text3); font-size: 18px; }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  gap: 12px;
+}
+
+.empty-state .es-icon { font-size: 48px; }
+.empty-state h3 { font-size: 18px; font-weight: 600; }
+.empty-state p { font-size: 14px; color: var(--text2); }
+
+/* ── SECTION HEADER ── */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+/* ── MISC ANIMATIONS ── */
+@keyframes bounce {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.1) 50%, transparent 75%);
+  background-size: 200% auto;
+  animation: shimmer 2s infinite;
+}
+
+/* ── MODAL/OVERLAY ── */
+.modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
+  backdrop-filter: blur(4px);
+  padding: 24px;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal-card {
+  background: var(--bg2);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  width: 100%;
+  max-width: 380px;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-card h3 { font-family: var(--font-display); font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+.modal-card p { color: var(--text2); font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
+
+/* ── CONFETTI ── */
+.confetti-piece {
+  position: absolute;
+  width: 10px;
+  height: 6px;
+  border-radius: 2px;
+  animation: confettiFall linear forwards;
+  pointer-events: none;
+  z-index: 9000;
+}
+
+@keyframes confettiFall {
+  0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* ── PRACTICE ── */
+#practice { background: var(--bg); }
+.practice-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+  padding-bottom: calc(var(--nav-h) + 20px);
+}
+.practice-body::-webkit-scrollbar { display: none; }
+
+/* ── DAILY CHALLENGE SCREEN ── */
+#daily-challenge { background: var(--bg); }
+.dc-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+.dc-body::-webkit-scrollbar { display: none; }
+
+/* ── STREAKS SCREEN ── */
+.streak-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.streak-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.streak-day .sd-label { font-size: 11px; color: var(--text2); }
+.streak-day .sd-circle {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+.streak-day.done .sd-circle {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-color: transparent;
+}
+.streak-day.today .sd-circle {
+  border-color: var(--gold);
+  background: rgba(245,200,66,0.1);
+}
+
+/* ── SCROLLBAR GLOBAL ── */
+::-webkit-scrollbar { width: 0; height: 0; }
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- Notification Container -->
+  <div id="notif-container"></div>
+
+  <!-- Achievement Popup -->
+  <div id="achievement-popup">
+    <div class="ach-badge" id="ach-popup-icon">🏆</div>
+    <div class="ach-info">
+      <h4>Achievement Unlocked!</h4>
+      <p id="ach-popup-name">First Interview</p>
+    </div>
+  </div>
+
+  <!-- ══ SPLASH ══ -->
+  <div class="screen" id="splash">
+    <div class="splash-particles" id="particles"></div>
+    <div class="splash-icon">🎯</div>
+    <div class="splash-logo">InterviewAce</div>
+    <div class="splash-tagline">Practice. Improve. Get Hired.</div>
+    <div class="loading-dots">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+
+  <!-- ══ LOGIN ══ -->
+  <div class="screen hidden" id="login">
+    <div class="auth-screen" style="flex:1;overflow-y:auto;padding-top:env(safe-area-inset-top,0)">
+      <div style="padding-top:40px">
+        <div class="auth-logo">InterviewAce</div>
+        <div style="font-size:13px;color:var(--text2);text-align:center;margin-bottom:40px">Practice. Improve. Get Hired.</div>
+        <div class="auth-title">Welcome Back</div>
+        <div class="auth-sub" style="margin-bottom:28px">Sign in to continue your journey</div>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="input-group">
+            <label>EMAIL</label>
+            <input type="email" id="login-email" placeholder="your@email.com">
+          </div>
+          <div class="input-group">
+            <label>PASSWORD</label>
+            <input type="password" id="login-password" placeholder="Enter password">
+          </div>
+          <button class="btn btn-primary" onclick="doLogin()">Sign In</button>
+          <button class="btn btn-secondary" onclick="showScreen('register')">Create Account</button>
+          <button class="btn btn-ghost" style="font-size:13px;color:var(--accent)" onclick="demoLogin()">Try Demo Account →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ REGISTER ══ -->
+  <div class="screen hidden" id="register">
+    <div class="auth-screen" style="flex:1;overflow-y:auto;padding-top:env(safe-area-inset-top,0)">
+      <div style="padding-top:32px">
+        <button class="btn btn-icon" onclick="showScreen('login')" style="margin-bottom:20px">←</button>
+        <div class="auth-title">Create Account</div>
+        <div class="auth-sub" style="margin-bottom:24px">Join thousands of job seekers</div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div class="input-group"><label>USERNAME</label><input type="text" id="reg-username" placeholder="YourName"></div>
+          <div class="input-group"><label>EMAIL</label><input type="email" id="reg-email" placeholder="your@email.com"></div>
+          <div class="input-group"><label>PASSWORD</label><input type="password" id="reg-password" placeholder="Min 6 characters"></div>
+          <div class="input-group"><label>CONFIRM PASSWORD</label><input type="password" id="reg-confirm" placeholder="Repeat password"></div>
+          <button class="btn btn-primary" onclick="doRegister()">Create Account</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ HOME ══ -->
+  <div class="screen hidden" id="home">
+    <div class="home-content scrollable" id="home-content">
+      <!-- Header -->
+      <div class="home-header">
+        <div>
+          <div class="home-greeting" id="home-greeting">Good morning,</div>
+          <div class="home-name" id="home-name">User</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--card-border);border-radius:99px;padding:8px 14px">
+            <span>🪙</span>
+            <span style="font-family:var(--font-display);font-weight:700;font-size:15px" id="home-coins">0</span>
+          </div>
+          <div class="avatar" id="home-avatar" onclick="switchTab('profile')">U</div>
+        </div>
+      </div>
+
+      <!-- Level Card -->
+      <div class="level-card">
+        <div class="level-header">
+          <div>
+            <div style="font-size:12px;color:var(--text2);margin-bottom:2px">CURRENT LEVEL</div>
+            <div class="level-badge" id="home-level-badge">LV 1</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:12px;color:var(--text2);margin-bottom:2px">XP</div>
+            <div style="font-family:var(--font-display);font-size:18px;font-weight:700" id="home-xp-text">0 / 100</div>
+          </div>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="home-xp-bar" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="stats-row" style="margin-bottom:20px">
+        <div class="stat-card">
+          <div class="stat-val" id="home-interviews">0</div>
+          <div class="stat-label">Interviews</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="home-avg-score">—</div>
+          <div class="stat-label">Avg Score</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="home-streak-display">0🔥</div>
+          <div class="stat-label">Day Streak</div>
+        </div>
+      </div>
+
+      <!-- Daily Challenge -->
+      <div class="daily-challenge-card" id="daily-challenge-card" onclick="showDailyChallenge()">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span class="streak-flame">⚡</span>
+            <span style="font-weight:600;font-size:15px">Daily Challenge</span>
+          </div>
+          <div class="badge badge-gold">+100🪙 +50XP</div>
+        </div>
+        <div id="dc-preview" style="font-size:14px;color:var(--text2);line-height:1.5">Loading challenge...</div>
+        <div id="dc-status" style="margin-top:12px"></div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="section-title">Start Practicing</div>
+      <div class="quick-actions">
+        <div class="quick-action-card featured" onclick="startInterview()">
+          <div>
+            <div class="qa-icon">🎙️</div>
+            <div class="qa-label" style="font-size:16px">Mock Interview</div>
+            <div class="qa-sub" style="font-size:12px">10 questions · Timed</div>
+          </div>
+          <div style="font-size:36px">→</div>
+        </div>
+        <div class="quick-action-card" onclick="switchTab('practice')">
+          <div class="qa-icon">📚</div>
+          <div class="qa-label">Question Bank</div>
+          <div class="qa-sub">Browse all questions</div>
+        </div>
+        <div class="quick-action-card" onclick="switchTab('shop')">
+          <div class="qa-icon">🛍️</div>
+          <div class="qa-label">Shop</div>
+          <div class="qa-sub">Spend your coins</div>
+        </div>
+        <div class="quick-action-card" onclick="switchTab('stats')">
+          <div class="qa-icon">📊</div>
+          <div class="qa-label">Statistics</div>
+          <div class="qa-sub">Track progress</div>
+        </div>
+        <div class="quick-action-card" onclick="showLeaderboard()">
+          <div class="qa-icon">🏆</div>
+          <div class="qa-label">Leaderboard</div>
+          <div class="qa-sub">Top players</div>
+        </div>
+      </div>
+
+      <!-- Recent Achievements -->
+      <div class="section-header" style="margin-top:8px">
+        <div class="section-title" style="margin-bottom:0">Achievements</div>
+        <button class="btn btn-ghost" style="font-size:13px;color:var(--accent)" onclick="switchTab('achievements')">See all</button>
+      </div>
+      <div id="home-achievements" style="display:flex;gap:10px;overflow-x:auto;padding-bottom:4px">
+        <!-- filled dynamically -->
+      </div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <nav class="bottom-nav">
+      <div class="nav-item active" onclick="switchTab('home')" id="nav-home">
+        <div class="nav-icon">🏠</div>
+        <div class="nav-label">Home</div>
+      </div>
+      <div class="nav-item" onclick="switchTab('practice')" id="nav-practice">
+        <div class="nav-icon">📖</div>
+        <div class="nav-label">Practice</div>
+      </div>
+      <div class="nav-item" onclick="switchTab('shop')" id="nav-shop">
+        <div class="nav-icon">🛍️</div>
+        <div class="nav-label">Shop</div>
+      </div>
+      <div class="nav-item" onclick="switchTab('stats')" id="nav-stats">
+        <div class="nav-icon">📊</div>
+        <div class="nav-label">Stats</div>
+      </div>
+      <div class="nav-item" onclick="switchTab('profile')" id="nav-profile">
+        <div class="nav-icon">👤</div>
+        <div class="nav-label">Profile</div>
+      </div>
+    </nav>
+  </div>
+
+  <!-- ══ PRACTICE (QUESTION BANK) ══ -->
+  <div class="screen hidden" id="practice">
+    <div class="screen-header">
+      <div class="section-title" style="margin-bottom:0">📖 Practice</div>
+      <button class="btn btn-icon" onclick="showScreen('role-select-practice')" style="margin-left:auto;width:auto;padding:8px 16px;border-radius:99px;font-size:13px">Mock Interview</button>
+    </div>
+    <div class="practice-body scrollable">
+      <div class="search-bar">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="qb-search" placeholder="Search questions..." oninput="filterQuestionBank()">
+      </div>
+      <div style="display:flex;gap:8px;overflow-x:auto;margin-bottom:16px;padding-bottom:4px" id="qb-category-tabs">
+        <div class="tag active" onclick="filterQBCategory(this,'All')">All</div>
+        <div class="tag" onclick="filterQBCategory(this,'Technical')">Technical</div>
+        <div class="tag" onclick="filterQBCategory(this,'Behavioral')">Behavioral</div>
+        <div class="tag" onclick="filterQBCategory(this,'Situational')">Situational</div>
+        <div class="tag" onclick="filterQBCategory(this,'HR')">HR</div>
+      </div>
+      <div style="display:flex;gap:8px;overflow-x:auto;margin-bottom:16px;padding-bottom:4px" id="qb-role-tabs">
+        <div class="tag active" onclick="filterQBRole(this,'All')">All Roles</div>
+        <div class="tag" onclick="filterQBRole(this,'Python Developer')">Python</div>
+        <div class="tag" onclick="filterQBRole(this,'Frontend Developer')">Frontend</div>
+        <div class="tag" onclick="filterQBRole(this,'Backend Developer')">Backend</div>
+        <div class="tag" onclick="filterQBRole(this,'Full Stack Developer')">Full Stack</div>
+        <div class="tag" onclick="filterQBRole(this,'Cybersecurity Analyst')">Security</div>
+        <div class="tag" onclick="filterQBRole(this,'Data Analyst')">Data</div>
+        <div class="tag" onclick="filterQBRole(this,'Machine Learning Engineer')">ML</div>
+        <div class="tag" onclick="filterQBRole(this,'DevOps Engineer')">DevOps</div>
+        <div class="tag" onclick="filterQBRole(this,'UI/UX Designer')">UI/UX</div>
+      </div>
+      <div id="qb-list"></div>
+    </div>
+
+    <nav class="bottom-nav">
+      <div class="nav-item" onclick="switchTab('home')" id="nav-home-p">🏠<div class="nav-label">Home</div></div>
+      <div class="nav-item active" onclick="switchTab('practice')" id="nav-practice-p">📖<div class="nav-label">Practice</div></div>
+      <div class="nav-item" onclick="switchTab('shop')" id="nav-shop-p">🛍️<div class="nav-label">Shop</div></div>
+      <div class="nav-item" onclick="switchTab('stats')" id="nav-stats-p">📊<div class="nav-label">Stats</div></div>
+      <div class="nav-item" onclick="switchTab('profile')" id="nav-profile-p">👤<div class="nav-label">Profile</div></div>
+    </nav>
+  </div>
+
+  <!-- ══ ROLE SELECTION ══ -->
+  <div class="screen hidden" id="role-select">
+    <div class="screen-header">
+      <button class="btn btn-icon" onclick="goBack()">←</button>
+      <h2>Choose Your Role</h2>
+    </div>
+    <div style="padding:0 20px 16px;flex-shrink:0">
+      <div class="search-bar" style="margin-bottom:0">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="role-search" placeholder="Search roles..." oninput="filterRoles()">
+      </div>
+    </div>
+    <div class="scrollable" style="flex:1;padding:0 20px 20px">
+      <div class="roles-grid" id="roles-grid" style="padding:0;display:grid;grid-template-columns:1fr 1fr;gap:12px"></div>
+    </div>
+  </div>
+
+  <!-- ══ ROLE SELECTION (PRACTICE) ══ -->
+  <div class="screen hidden" id="role-select-practice">
+    <div class="screen-header">
+      <button class="btn btn-icon" onclick="goBack()">←</button>
+      <h2>Choose Role</h2>
+    </div>
+    <div class="scrollable" style="flex:1;padding:16px 20px">
+      <div class="roles-grid" id="roles-grid-practice" style="padding:0;display:grid;grid-template-columns:1fr 1fr;gap:12px"></div>
+    </div>
+  </div>
+
+  <!-- ══ DIFFICULTY SELECTION ══ -->
+  <div class="screen hidden" id="difficulty">
+    <div class="screen-header">
+      <button class="btn btn-icon" onclick="goBack()">←</button>
+      <h2>Select Difficulty</h2>
+    </div>
+    <div id="selected-role-display" style="padding:0 20px 16px;font-size:13px;color:var(--text2)"></div>
+    <div class="diff-cards scrollable" style="flex:1"></div>
+  </div>
+
+  <!-- ══ INTERVIEW ══ -->
+  <div class="screen hidden" id="interview">
+    <div class="interview-header">
+      <div class="question-progress">
+        <div class="q-counter" id="q-counter">Question 1 of 10</div>
+        <div class="q-timer" id="q-timer">02:00</div>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="q-progress"></div>
+      </div>
+    </div>
+    <div class="interview-body scrollable">
+      <div>
+        <div id="q-type-badge" class="question-type-badge badge-purple">Technical</div>
+        <div class="question-card">
+          <div class="question-text" id="q-text">Loading question...</div>
+        </div>
+      </div>
+      <div>
+        <textarea id="answer-area" placeholder="Type your answer here... Be specific and use real examples where possible." maxlength="2000"></textarea>
+        <div class="char-counter"><span id="char-count">0</span>/2000</div>
+      </div>
+    </div>
+    <div class="interview-actions">
+      <button class="btn btn-secondary" onclick="skipQuestion()">Skip</button>
+      <button class="btn btn-primary" onclick="submitAnswer()">Submit Answer →</button>
+    </div>
+  </div>
+
+  <!-- ══ FEEDBACK ══ -->
+  <div class="screen hidden" id="feedback">
+    <div class="screen-header">
+      <button class="btn btn-icon" onclick="goToNextQuestion()">Next →</button>
+      <h2 style="flex:0">Question Feedback</h2>
+    </div>
+    <div class="feedback-body scrollable">
+      <!-- Score -->
+      <div class="score-ring" id="score-ring-wrap">
+        <canvas id="score-canvas" width="140" height="140"></canvas>
+        <div class="score-number" id="score-number">0</div>
+        <div style="font-size:13px;color:var(--text2)">out of 100</div>
+      </div>
+
+      <!-- Rewards -->
+      <div style="display:flex;justify-content:center;gap:16px;margin-bottom:24px">
+        <div class="badge badge-gold">+<span id="fb-coins">10</span> 🪙</div>
+        <div class="badge badge-purple">+<span id="fb-xp">15</span> XP</div>
+      </div>
+
+      <!-- STAR Analysis (shown for behavioral) -->
+      <div id="star-analysis" style="margin-bottom:20px;display:none">
+        <div class="section-title" style="font-size:15px">STAR Method Analysis</div>
+        <div class="star-method-grid" id="star-grid"></div>
+      </div>
+
+      <!-- Strengths -->
+      <div class="feedback-section" id="strengths-section">
+        <h4>✅ Strengths</h4>
+        <div id="strengths-list"></div>
+      </div>
+
+      <!-- Weaknesses -->
+      <div class="feedback-section" id="weaknesses-section">
+        <h4>⚠️ Areas to Improve</h4>
+        <div id="weaknesses-list"></div>
+      </div>
+
+      <!-- Suggestions -->
+      <div class="feedback-section">
+        <h4>💡 Suggestions</h4>
+        <div id="suggestions-list"></div>
+      </div>
+
+      <!-- Better Answer -->
+      <div class="feedback-section">
+        <h4>📝 Better Answer Structure</h4>
+        <div id="better-answer" class="card" style="font-size:14px;line-height:1.7;color:var(--text2)"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ RESULTS ══ -->
+  <div class="screen hidden" id="results">
+    <div class="scrollable" style="flex:1;padding-bottom:24px">
+      <div class="results-hero">
+        <div class="results-emoji" id="results-emoji">🎉</div>
+        <h2 style="font-size:28px;margin-bottom:8px" id="results-title">Interview Complete!</h2>
+        <div style="color:var(--text2);font-size:15px;margin-bottom:24px" id="results-subtitle">Here's how you did</div>
+
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px">
+          <div style="font-family:var(--font-display);font-size:72px;font-weight:800;line-height:1" id="results-score">85</div>
+          <div style="font-size:20px;color:var(--text2)">/100</div>
+        </div>
+        <div style="font-size:14px;color:var(--text2);margin-bottom:32px" id="results-grade">Great Performance!</div>
+
+        <div style="display:flex;gap:16px;margin-bottom:32px">
+          <div class="stat-card" style="min-width:80px">
+            <div class="stat-val" id="res-correct">8</div>
+            <div class="stat-label">Answered</div>
+          </div>
+          <div class="stat-card" style="min-width:80px">
+            <div class="stat-val" id="res-skipped">2</div>
+            <div class="stat-label">Skipped</div>
+          </div>
+          <div class="stat-card" style="min-width:80px">
+            <div class="stat-val" id="res-time">12m</div>
+            <div class="stat-label">Time</div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;width:100%;margin-bottom:16px">
+          <div class="badge badge-gold" style="flex:1;justify-content:center;padding:12px">+<span id="res-coins">100</span> 🪙</div>
+          <div class="badge badge-purple" style="flex:1;justify-content:center;padding:12px">+<span id="res-xp">100</span> XP</div>
+        </div>
+      </div>
+
+      <div style="padding:0 24px;display:flex;flex-direction:column;gap:12px">
+        <button class="btn btn-primary" onclick="startInterview()">Practice Again</button>
+        <button class="btn btn-secondary" onclick="switchTab('home')">Back to Home</button>
+        <button class="btn btn-ghost" style="color:var(--accent)" onclick="showScreen('review')">Review Answers</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ REVIEW ══ -->
+  <div class="screen hidden" id="review">
+    <div class="screen-header">
+      <button class="btn btn-icon" onclick="goBack()">←</button>
+      <h2>Review Session</h2>
+    </div>
+    <div class="scrollable" style="flex:1;padding:16px 20px 24px" id="review-list">
+    </div>
+  </div>
+
+  <!-- ══ SHOP ══ -->
+  <div class="screen hidden" id="shop">
+    <div class="screen-header">
+      <div class="section-title" style="margin-bottom:0">🛍️ Shop</div>
+    </div>
+    <div class="balance-bar">
+      <span style="font-size:20px">🪙</span>
+      <span class="b-amount" id="shop-coins">0</span>
+      <span class="b-label">coins available</span>
+    </div>
+    <div class="shop-tabs">
+      <div class="tag active" onclick="filterShop(this,'all')">All</div>
+      <div class="tag" onclick="filterShop(this,'themes')">Themes</div>
+      <div class="tag" onclick="filterShop(this,'frames')">Frames</div>
+      <div class="tag" onclick="filterShop(this,'titles')">Titles</div>
+      <div class="tag" onclick="filterShop(this,'effects')">Effects</div>
+    </div>
+    <div class="shop-body scrollable">
+      <div class="shop-grid" id="shop-grid"></div>
+    </div>
+
+    <nav class="bottom-nav">
+      <div class="nav-item" onclick="switchTab('home')">🏠<div class="nav-label">Home</div></div>
+      <div class="nav-item" onclick="switchTab('practice')">📖<div class="nav-label">Practice</div></div>
+      <div class="nav-item active" onclick="switchTab('shop')">🛍️<div class="nav-label">Shop</div></div>
+      <div class="nav-item" onclick="switchTab('stats')">📊<div class="nav-label">Stats</div></div>
+      <div class="nav-item" onclick="switchTab('profile')">👤<div class="nav-label">Profile</div></div>
+    </nav>
+  </div>
+
+  <!-- ══ ACHIEVEMENTS ══ -->
+  <div class="screen hidden" id="achievements">
+    <div class="screen-header">
+      <div class="section-title" style="margin-bottom:0">🏆 Achievements</div>
+    </div>
+    <div class="ach-body scrollable">
+      <div id="ach-stats" style="margin-bottom:20px"></div>
+      <div class="ach-grid" id="ach-grid"></div>
+    </div>
+
+    <nav class="bottom-nav">
+      <div class="nav-item" onclick="switchTab('home')">🏠<div class="nav-label">Home</div></div>
+      <div class="nav-item" onclick="switchTab('practice')">📖<div class="nav-label">Practice</div></div>
+      <div class="nav-item" onclick="switchTab('shop')">🛍️<div class="nav-label">Shop</div></div>
+      <div class="nav-item" onclick="switchTab('stats')">📊<div class="nav-label">Stats</div></div>
+      <div class="nav-item" onclick="switchTab('profile')">👤<div class="nav-label">Profile</div></div>
+    </nav>
+  </div>
+
+  <!-- ══ STATS ══ -->
+  <div class="screen hidden" id="stats">
+    <div class="screen-header">
+      <div class="section-title" style="margin-bottom:0">📊 Statistics</div>
+    </div>
+    <div class="stats-body scrollable">
+      <div id="stats-content"></div>
+    </div>
+
+    <nav class="bottom-nav">
+      <div class="nav-item" onclick="switchTab('home')">🏠<div class="nav-label">Home</div></div>
+      <div class="nav-item" onclick="switchTab('practice')">📖<div class="nav-label">Practice</div></div>
+      <div class="nav-item" onclick="switchTab('shop')">🛍️<div class="nav-label">Shop</div></div>
+      <div class="nav-item active" onclick="switchTab('stats')">📊<div class="nav-label">Stats</div></div>
+      <div class="nav-item" onclick="switchTab('profile')">👤<div class="nav-label">Profile</div></div>
+    </nav>
+  </div>
+
+  <!-- ══ PROFILE ══ -->
+  <div class="screen hidden" id="profile">
+    <div class="screen-header">
+      <div class="section-title" style="margin-bottom:0">👤 Profile</div>
+      <button class="btn btn-ghost" style="color:var(--red);font-size:13px" onclick="logout()">Logout</button>
+    </div>
+    <div class="profile-body scrollable">
+      <div id="profile-content"></div>
+    </div>
+
+    <nav class="bottom-nav">
+      <div class="nav-item" onclick="switchTab('home')">🏠<div class="nav-label">Home</div></div>
+      <div class="nav-item" onclick="switchTab('practice')">📖<div class="nav-label">Practice</div></div>
+      <div class="nav-item" onclick="switchTab('shop')">🛍️<div class="nav-label">Shop</div></div>
+      <div class="nav-item" onclick="switchTab('stats')">📊<div class="nav-label">Stats</div></div>
+      <div class="nav-item active" onclick="switchTab('profile')">👤<div class="nav-label">Profile</div></div>
+    </nav>
+  </div>
+
+  <!-- ══ LEADERBOARD ══ -->
+  <div class="screen hidden" id="leaderboard">
+    <div class="screen-header">
+      <button class="btn btn-icon" onclick="goBack()">←</button>
+      <h2>🏆 Leaderboard</h2>
+    </div>
+    <div class="scrollable" style="flex:1;padding:16px 20px 24px" id="lb-content"></div>
+  </div>
+
+  <!-- ══ DAILY CHALLENGE SCREEN ══ -->
+  <div class="screen hidden" id="daily-challenge">
+    <div class="screen-header">
+      <button class="btn btn-icon" onclick="goBack()">←</button>
+      <h2>⚡ Daily Challenge</h2>
+    </div>
+    <div class="dc-body scrollable" id="dc-body"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// DATA: Question Bank
+// ═══════════════════════════════════════════════════════════
+const QUESTION_BANK = [
+  // Python Developer - Technical
+  {role:"Python Developer",difficulty:"Beginner",category:"Technical",question:"What is PEP 8 and why is it important?"},
+  {role:"Python Developer",difficulty:"Beginner",category:"Technical",question:"Explain the difference between a list and a tuple in Python."},
+  {role:"Python Developer",difficulty:"Beginner",category:"Technical",question:"What are Python dictionaries and when would you use them?"},
+  {role:"Python Developer",difficulty:"Beginner",category:"Technical",question:"What is the difference between '==' and 'is' in Python?"},
+  {role:"Python Developer",difficulty:"Intermediate",category:"Technical",question:"What is a Python decorator and how do you create one?"},
+  {role:"Python Developer",difficulty:"Intermediate",category:"Technical",question:"Explain list comprehensions and give an example."},
+  {role:"Python Developer",difficulty:"Intermediate",category:"Technical",question:"What is the difference between *args and **kwargs?"},
+  {role:"Python Developer",difficulty:"Intermediate",category:"Technical",question:"How does Python's GIL (Global Interpreter Lock) work?"},
+  {role:"Python Developer",difficulty:"Intermediate",category:"Technical",question:"Explain generators and the 'yield' keyword in Python."},
+  {role:"Python Developer",difficulty:"Advanced",category:"Technical",question:"What are metaclasses in Python and when would you use them?"},
+  {role:"Python Developer",difficulty:"Advanced",category:"Technical",question:"Explain Python's memory management and garbage collection."},
+  {role:"Python Developer",difficulty:"Advanced",category:"Technical",question:"How would you optimize a Python application for performance?"},
+  {role:"Python Developer",difficulty:"Advanced",category:"Technical",question:"Describe the difference between multiprocessing and threading in Python."},
+  {role:"Python Developer",difficulty:"Intermediate",category:"Technical",question:"What is duck typing in Python?"},
+  {role:"Python Developer",difficulty:"Beginner",category:"Technical",question:"What are Python's built-in data types?"},
+  {role:"Python Developer",difficulty:"Intermediate",category:"Technical",question:"Explain context managers and the 'with' statement."},
+  {role:"Python Developer",difficulty:"Advanced",category:"Technical",question:"What are Python coroutines and async/await?"},
+
+  // Frontend Developer
+  {role:"Frontend Developer",difficulty:"Beginner",category:"Technical",question:"What is the difference between HTML, CSS, and JavaScript?"},
+  {role:"Frontend Developer",difficulty:"Beginner",category:"Technical",question:"Explain the CSS box model."},
+  {role:"Frontend Developer",difficulty:"Beginner",category:"Technical",question:"What is responsive web design?"},
+  {role:"Frontend Developer",difficulty:"Intermediate",category:"Technical",question:"Explain the difference between Flexbox and CSS Grid."},
+  {role:"Frontend Developer",difficulty:"Intermediate",category:"Technical",question:"What is the virtual DOM and how does React use it?"},
+  {role:"Frontend Developer",difficulty:"Intermediate",category:"Technical",question:"Explain event bubbling and event delegation in JavaScript."},
+  {role:"Frontend Developer",difficulty:"Intermediate",category:"Technical",question:"What are promises and async/await in JavaScript?"},
+  {role:"Frontend Developer",difficulty:"Advanced",category:"Technical",question:"Explain browser rendering pipeline and critical rendering path."},
+  {role:"Frontend Developer",difficulty:"Advanced",category:"Technical",question:"How would you optimize a website's performance?"},
+  {role:"Frontend Developer",difficulty:"Advanced",category:"Technical",question:"Explain server-side rendering vs client-side rendering."},
+  {role:"Frontend Developer",difficulty:"Intermediate",category:"Technical",question:"What is CORS and how do you handle it?"},
+  {role:"Frontend Developer",difficulty:"Intermediate",category:"Technical",question:"Explain closures in JavaScript with an example."},
+  {role:"Frontend Developer",difficulty:"Advanced",category:"Technical",question:"What is the event loop in JavaScript?"},
+  {role:"Frontend Developer",difficulty:"Beginner",category:"Technical",question:"What are semantic HTML elements and why use them?"},
+  {role:"Frontend Developer",difficulty:"Intermediate",category:"Technical",question:"What is webpack and what does it do?"},
+
+  // Backend Developer
+  {role:"Backend Developer",difficulty:"Beginner",category:"Technical",question:"What is REST API and what are its principles?"},
+  {role:"Backend Developer",difficulty:"Beginner",category:"Technical",question:"Explain the difference between SQL and NoSQL databases."},
+  {role:"Backend Developer",difficulty:"Intermediate",category:"Technical",question:"What is database indexing and why is it important?"},
+  {role:"Backend Developer",difficulty:"Intermediate",category:"Technical",question:"Explain ACID properties in database transactions."},
+  {role:"Backend Developer",difficulty:"Intermediate",category:"Technical",question:"What is JWT authentication and how does it work?"},
+  {role:"Backend Developer",difficulty:"Advanced",category:"Technical",question:"How would you design a scalable microservices architecture?"},
+  {role:"Backend Developer",difficulty:"Advanced",category:"Technical",question:"Explain database sharding and when to use it."},
+  {role:"Backend Developer",difficulty:"Intermediate",category:"Technical",question:"What is caching and what are common caching strategies?"},
+  {role:"Backend Developer",difficulty:"Advanced",category:"Technical",question:"How do you handle race conditions in concurrent programming?"},
+  {role:"Backend Developer",difficulty:"Intermediate",category:"Technical",question:"What is GraphQL and how does it differ from REST?"},
+  {role:"Backend Developer",difficulty:"Beginner",category:"Technical",question:"What are HTTP status codes? List the most common ones."},
+  {role:"Backend Developer",difficulty:"Intermediate",category:"Technical",question:"Explain the N+1 query problem and how to solve it."},
+  {role:"Backend Developer",difficulty:"Advanced",category:"Technical",question:"What is the CAP theorem in distributed systems?"},
+  {role:"Backend Developer",difficulty:"Advanced",category:"Technical",question:"How would you implement rate limiting in an API?"},
+
+  // Full Stack Developer
+  {role:"Full Stack Developer",difficulty:"Intermediate",category:"Technical",question:"Explain the MVC architectural pattern."},
+  {role:"Full Stack Developer",difficulty:"Intermediate",category:"Technical",question:"What is the difference between cookies, localStorage, and sessionStorage?"},
+  {role:"Full Stack Developer",difficulty:"Advanced",category:"Technical",question:"How would you architect a real-time chat application?"},
+  {role:"Full Stack Developer",difficulty:"Intermediate",category:"Technical",question:"What is WebSocket and when would you use it over HTTP?"},
+  {role:"Full Stack Developer",difficulty:"Advanced",category:"Technical",question:"Explain CI/CD pipelines and their benefits."},
+
+  // Cybersecurity
+  {role:"Cybersecurity Analyst",difficulty:"Beginner",category:"Technical",question:"What is the CIA triad in cybersecurity?"},
+  {role:"Cybersecurity Analyst",difficulty:"Beginner",category:"Technical",question:"What is the difference between a virus and a worm?"},
+  {role:"Cybersecurity Analyst",difficulty:"Intermediate",category:"Technical",question:"Explain SQL injection and how to prevent it."},
+  {role:"Cybersecurity Analyst",difficulty:"Intermediate",category:"Technical",question:"What is cross-site scripting (XSS) and how do you mitigate it?"},
+  {role:"Cybersecurity Analyst",difficulty:"Intermediate",category:"Technical",question:"Explain the difference between symmetric and asymmetric encryption."},
+  {role:"Cybersecurity Analyst",difficulty:"Advanced",category:"Technical",question:"Describe how a man-in-the-middle attack works."},
+  {role:"Cybersecurity Analyst",difficulty:"Advanced",category:"Technical",question:"What is penetration testing and what are its phases?"},
+  {role:"Cybersecurity Analyst",difficulty:"Intermediate",category:"Technical",question:"What is a firewall and what are its types?"},
+  {role:"Cybersecurity Analyst",difficulty:"Beginner",category:"Technical",question:"What is two-factor authentication and why is it important?"},
+  {role:"Cybersecurity Analyst",difficulty:"Advanced",category:"Technical",question:"Explain zero-trust security architecture."},
+  {role:"Cybersecurity Analyst",difficulty:"Intermediate",category:"Technical",question:"What is OWASP and what is the OWASP Top 10?"},
+  {role:"Cybersecurity Analyst",difficulty:"Advanced",category:"Technical",question:"How would you respond to a ransomware attack?"},
+  {role:"Cybersecurity Analyst",difficulty:"Intermediate",category:"Technical",question:"What is social engineering and how do you defend against it?"},
+  {role:"Cybersecurity Analyst",difficulty:"Advanced",category:"Technical",question:"Explain SIEM systems and their role in security operations."},
+
+  // Data Analyst
+  {role:"Data Analyst",difficulty:"Beginner",category:"Technical",question:"What is the difference between mean, median, and mode?"},
+  {role:"Data Analyst",difficulty:"Beginner",category:"Technical",question:"What is SQL and how is it used in data analysis?"},
+  {role:"Data Analyst",difficulty:"Intermediate",category:"Technical",question:"Explain the difference between INNER JOIN and LEFT JOIN."},
+  {role:"Data Analyst",difficulty:"Intermediate",category:"Technical",question:"What is data normalization and why is it important?"},
+  {role:"Data Analyst",difficulty:"Advanced",category:"Technical",question:"Explain A/B testing and statistical significance."},
+  {role:"Data Analyst",difficulty:"Intermediate",category:"Technical",question:"What is a pivot table and how do you use it?"},
+  {role:"Data Analyst",difficulty:"Advanced",category:"Technical",question:"Explain the difference between correlation and causation."},
+
+  // ML Engineer
+  {role:"Machine Learning Engineer",difficulty:"Beginner",category:"Technical",question:"What is the difference between supervised and unsupervised learning?"},
+  {role:"Machine Learning Engineer",difficulty:"Intermediate",category:"Technical",question:"Explain overfitting and underfitting in machine learning models."},
+  {role:"Machine Learning Engineer",difficulty:"Intermediate",category:"Technical",question:"What is cross-validation and why is it used?"},
+  {role:"Machine Learning Engineer",difficulty:"Advanced",category:"Technical",question:"Explain the backpropagation algorithm in neural networks."},
+  {role:"Machine Learning Engineer",difficulty:"Advanced",category:"Technical",question:"What is the transformer architecture and how does it work?"},
+  {role:"Machine Learning Engineer",difficulty:"Intermediate",category:"Technical",question:"What is feature engineering and why is it important?"},
+
+  // DevOps
+  {role:"DevOps Engineer",difficulty:"Beginner",category:"Technical",question:"What is the difference between Docker and Kubernetes?"},
+  {role:"DevOps Engineer",difficulty:"Intermediate",category:"Technical",question:"Explain the concept of Infrastructure as Code (IaC)."},
+  {role:"DevOps Engineer",difficulty:"Intermediate",category:"Technical",question:"What is blue-green deployment?"},
+  {role:"DevOps Engineer",difficulty:"Advanced",category:"Technical",question:"How would you design a disaster recovery plan?"},
+  {role:"DevOps Engineer",difficulty:"Intermediate",category:"Technical",question:"What are Kubernetes pods, deployments, and services?"},
+  {role:"DevOps Engineer",difficulty:"Advanced",category:"Technical",question:"Explain the 12-factor app methodology."},
+
+  // UI/UX Designer
+  {role:"UI/UX Designer",difficulty:"Beginner",category:"Technical",question:"What is the difference between UI and UX design?"},
+  {role:"UI/UX Designer",difficulty:"Intermediate",category:"Technical",question:"Explain the user-centered design process."},
+  {role:"UI/UX Designer",difficulty:"Intermediate",category:"Technical",question:"What are Gestalt principles and how do they apply to design?"},
+  {role:"UI/UX Designer",difficulty:"Advanced",category:"Technical",question:"How do you measure and improve UX through data?"},
+  {role:"UI/UX Designer",difficulty:"Intermediate",category:"Technical",question:"What is accessibility in design and how do you ensure it?"},
+
+  // Behavioral questions (universal)
+  {role:"Python Developer",difficulty:"Beginner",category:"Behavioral",question:"Tell me about yourself and your background in Python development."},
+  {role:"Frontend Developer",difficulty:"Beginner",category:"Behavioral",question:"Tell me about a challenging frontend project you worked on."},
+  {role:"Backend Developer",difficulty:"Beginner",category:"Behavioral",question:"Describe a time when you had to optimize a slow database query."},
+  {role:"Cybersecurity Analyst",difficulty:"Beginner",category:"Behavioral",question:"Tell me about a time you identified and resolved a security vulnerability."},
+  {role:"Data Analyst",difficulty:"Beginner",category:"Behavioral",question:"Describe a time when data analysis led to an important business decision."},
+
+  // Universal Behavioral
+  {role:"Python Developer",difficulty:"Beginner",category:"Behavioral",question:"Describe a situation where you had to work under pressure to meet a deadline."},
+  {role:"Frontend Developer",difficulty:"Beginner",category:"Behavioral",question:"Tell me about a time you had a conflict with a team member and how you resolved it."},
+  {role:"Backend Developer",difficulty:"Intermediate",category:"Behavioral",question:"Describe a time you failed in a project and what you learned from it."},
+  {role:"Full Stack Developer",difficulty:"Beginner",category:"Behavioral",question:"Tell me about your most successful project and what made it successful."},
+  {role:"Machine Learning Engineer",difficulty:"Intermediate",category:"Behavioral",question:"Describe a time when you had to explain a complex technical concept to a non-technical stakeholder."},
+
+  // Situational
+  {role:"Python Developer",difficulty:"Intermediate",category:"Situational",question:"What would you do if you discovered a critical bug in production code on a Friday evening?"},
+  {role:"Frontend Developer",difficulty:"Intermediate",category:"Situational",question:"A client insists on a design choice you strongly disagree with. How would you handle this?"},
+  {role:"Backend Developer",difficulty:"Intermediate",category:"Situational",question:"Your team's server is down and affecting thousands of users. What's your immediate action plan?"},
+  {role:"Cybersecurity Analyst",difficulty:"Advanced",category:"Situational",question:"You discover that your company has been breached. What are your immediate steps?"},
+  {role:"Data Analyst",difficulty:"Intermediate",category:"Situational",question:"You're given a dataset with 30% missing values. How would you handle this?"},
+  {role:"Full Stack Developer",difficulty:"Intermediate",category:"Situational",question:"What would you do if a project deadline is missed due to unforeseen technical challenges?"},
+  {role:"DevOps Engineer",difficulty:"Advanced",category:"Situational",question:"Production is down during peak traffic. Walk me through your incident response process."},
+
+  // HR Questions
+  {role:"Python Developer",difficulty:"Beginner",category:"HR",question:"Why do you want to work at our company?"},
+  {role:"Frontend Developer",difficulty:"Beginner",category:"HR",question:"Where do you see yourself in 5 years?"},
+  {role:"Backend Developer",difficulty:"Beginner",category:"HR",question:"What is your greatest professional strength?"},
+  {role:"Full Stack Developer",difficulty:"Beginner",category:"HR",question:"Why should we hire you over other candidates?"},
+  {role:"Cybersecurity Analyst",difficulty:"Beginner",category:"HR",question:"What motivates you in your career?"},
+  {role:"Data Analyst",difficulty:"Beginner",category:"HR",question:"How do you handle feedback and criticism?"},
+  {role:"Machine Learning Engineer",difficulty:"Beginner",category:"HR",question:"What are your salary expectations?"},
+  {role:"DevOps Engineer",difficulty:"Beginner",category:"HR",question:"How do you stay updated with the latest technology trends?"},
+  {role:"UI/UX Designer",difficulty:"Beginner",category:"HR",question:"Describe your ideal work environment."},
+  {role:"Python Developer",difficulty:"Beginner",category:"HR",question:"What is your greatest weakness and how are you working on it?"},
+];
+
+// ═══════════════════════════════════════════════════════════
+// DATA: Shop Items
+// ═══════════════════════════════════════════════════════════
+const SHOP_ITEMS = [
+  {id:"theme-dark",category:"themes",name:"Dark Mode",icon:"🌙",price:0,desc:"Clean dark theme"},
+  {id:"theme-ocean",category:"themes",name:"Ocean Theme",icon:"🌊",price:300,desc:"Deep blue vibes"},
+  {id:"theme-hacker",category:"themes",name:"Hacker Theme",icon:"💻",price:500,desc:"Matrix green"},
+  {id:"theme-space",category:"themes",name:"Space Theme",icon:"🚀",price:400,desc:"Galaxy vibes"},
+  {id:"theme-neon",category:"themes",name:"Neon Theme",icon:"⚡",price:600,desc:"Electric glow"},
+  {id:"frame-bronze",category:"frames",name:"Bronze Frame",icon:"🥉",price:100,desc:"Basic frame"},
+  {id:"frame-silver",category:"frames",name:"Silver Frame",icon:"🥈",price:250,desc:"Shiny silver"},
+  {id:"frame-gold",category:"frames",name:"Gold Frame",icon:"🥇",price:500,desc:"Pure gold"},
+  {id:"frame-diamond",category:"frames",name:"Diamond Frame",icon:"💎",price:1000,desc:"Ultra rare"},
+  {id:"title-rookie",category:"titles",name:"Interview Rookie",icon:"🌱",price:0,desc:"First title"},
+  {id:"title-wizard",category:"titles",name:"Tech Wizard",icon:"🧙",price:300,desc:"For experts"},
+  {id:"title-master",category:"titles",name:"Interview Master",icon:"👑",price:600,desc:"Elite title"},
+  {id:"title-champion",category:"titles",name:"Career Champion",icon:"🏆",price:1000,desc:"Legendary"},
+  {id:"effect-sparkle",category:"effects",name:"Sparkle Effect",icon:"✨",price:200,desc:"Sparkly profile"},
+  {id:"effect-fire",category:"effects",name:"Fire Border",icon:"🔥",price:350,desc:"Blazing hot"},
+  {id:"effect-electric",category:"effects",name:"Electric Aura",icon:"⚡",price:500,desc:"Electrifying"},
+];
+
+// ═══════════════════════════════════════════════════════════
+// DATA: Achievements
+// ═══════════════════════════════════════════════════════════
+const ACHIEVEMENTS = [
+  {id:"first-interview",name:"First Steps",desc:"Complete your first interview",icon:"🎯",condition:u=>u.interviewsCompleted>=1},
+  {id:"ten-interviews",name:"Dedicated",desc:"Complete 10 interviews",icon:"💪",condition:u=>u.interviewsCompleted>=10},
+  {id:"fifty-interviews",name:"Interview Pro",desc:"Complete 50 interviews",icon:"🔥",condition:u=>u.interviewsCompleted>=50},
+  {id:"level-5",name:"Rising Star",desc:"Reach Level 5",icon:"⭐",condition:u=>u.level>=5},
+  {id:"level-10",name:"Expert",desc:"Reach Level 10",icon:"🌟",condition:u=>u.level>=10},
+  {id:"level-25",name:"Legend",desc:"Reach Level 25",icon:"👑",condition:u=>u.level>=25},
+  {id:"streak-3",name:"On a Roll",desc:"Achieve a 3-day streak",icon:"🔥",condition:u=>u.streak>=3},
+  {id:"streak-7",name:"Week Warrior",desc:"7-day streak",icon:"🗓️",condition:u=>u.streak>=7},
+  {id:"streak-30",name:"Monthly Master",desc:"30-day streak",icon:"📅",condition:u=>u.streak>=30},
+  {id:"perfect-score",name:"Perfectionist",desc:"Score 100 on a question",icon:"💯",condition:u=>u.maxScore>=100},
+  {id:"coins-1000",name:"Rich Dev",desc:"Earn 1000 coins",icon:"🪙",condition:u=>u.totalCoinsEarned>=1000},
+  {id:"first-shop",name:"Shopaholic",desc:"Buy your first item",icon:"🛍️",condition:u=>u.purchasedItems.length>=1},
+  {id:"python-master",name:"Python Master",desc:"Complete 5 Python interviews",icon:"🐍",condition:u=>((u.roleStats||{})['Python Developer']||0)>=5},
+  {id:"security-ace",name:"Security Ace",desc:"Complete 5 Cybersecurity interviews",icon:"🛡️",condition:u=>((u.roleStats||{})['Cybersecurity Analyst']||0)>=5},
+  {id:"all-roles",name:"Versatile",desc:"Try all 9 job roles",icon:"🎭",condition:u=>Object.keys(u.roleStats||{}).length>=9},
+];
+
+// ═══════════════════════════════════════════════════════════
+// DATA: Roles
+// ═══════════════════════════════════════════════════════════
+const ROLES = [
+  {name:"Python Developer",icon:"🐍",color:"#3dd68c"},
+  {name:"Frontend Developer",icon:"🎨",color:"#5b8ef0"},
+  {name:"Backend Developer",icon:"⚙️",color:"#7c5cbf"},
+  {name:"Full Stack Developer",icon:"🔥",color:"#f0754f"},
+  {name:"Cybersecurity Analyst",icon:"🛡️",color:"#f05c5c"},
+  {name:"Data Analyst",icon:"📊",color:"#f5c842"},
+  {name:"Machine Learning Engineer",icon:"🤖",color:"#3dd68c"},
+  {name:"DevOps Engineer",icon:"☁️",color:"#5b8ef0"},
+  {name:"UI/UX Designer",icon:"✏️",color:"#f54f9e"},
+];
+
+// ═══════════════════════════════════════════════════════════
+// FEEDBACK ENGINE
+// ═══════════════════════════════════════════════════════════
+const FEEDBACK_DB = {
+  Technical: {
+    strengths:[
+      "Clear explanation of the concept",
+      "Good use of technical terminology",
+      "Demonstrated understanding of fundamentals",
+      "Provided relevant examples",
+      "Logical structure in the answer",
+    ],
+    weaknesses:[
+      "Missing real-world application examples",
+      "Could elaborate more on edge cases",
+      "Lacks depth in technical details",
+      "No mention of best practices",
+      "Could compare alternative approaches",
+    ],
+    suggestions:[
+      "Include concrete code examples to illustrate your point",
+      "Mention real projects where you applied this knowledge",
+      "Discuss trade-offs of different approaches",
+      "Add information about common pitfalls to avoid",
+      "Reference industry best practices or standards",
+    ],
+  },
+  Behavioral: {
+    strengths:[
+      "Good storytelling approach",
+      "Showed self-awareness",
+      "Demonstrated leadership qualities",
+      "Clear communication style",
+    ],
+    weaknesses:[
+      "Missing specific measurable outcomes",
+      "Could quantify the impact more clearly",
+      "Answer lacks the STAR structure",
+      "Missing the 'Result' component",
+    ],
+    suggestions:[
+      "Use the STAR method: Situation, Task, Action, Result",
+      "Quantify your achievements with numbers or percentages",
+      "Focus on what YOU specifically did, not the team",
+      "End with what you learned from the experience",
+    ],
+  },
+  Situational: {
+    strengths:[
+      "Good problem-solving approach",
+      "Showed clear thinking under pressure",
+      "Demonstrated good prioritization",
+      "Considered multiple stakeholders",
+    ],
+    weaknesses:[
+      "Missing escalation strategy",
+      "Didn't mention communication plan",
+      "Could include risk assessment",
+      "No mention of post-incident review",
+    ],
+    suggestions:[
+      "Always include a communication plan for stakeholders",
+      "Discuss how you would prevent this in the future",
+      "Mention your decision-making framework",
+      "Include how you would document the issue",
+    ],
+  },
+  HR: {
+    strengths:[
+      "Confident and clear delivery",
+      "Showed genuine enthusiasm",
+      "Good self-presentation",
+      "Aligned with professional goals",
+    ],
+    weaknesses:[
+      "Answer could be more specific to this company",
+      "Could show more research about the role",
+      "Missing connection to company values",
+      "Too generic — needs personalization",
+    ],
+    suggestions:[
+      "Research the company's mission and align your answer",
+      "Use specific examples from your experience",
+      "Show genuine enthusiasm for the role",
+      "Connect your skills to their specific needs",
+    ],
+  },
+};
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+let currentUser = null;
+let currentScreen = 'splash';
+let previousScreens = [];
+let interviewState = {
+  questions: [],
+  currentIndex: 0,
+  answers: [],
+  scores: [],
+  startTime: null,
+  role: '',
+  difficulty: '',
+  timerInterval: null,
+  timeLeft: 120,
+};
+let qbState = { category: 'All', role: 'All', search: '' };
+let shopFilter = 'all';
+let sessionMode = 'practice'; // 'practice' or 'mock'
+let rolePracticeMode = false; // flag to track role selection context
+
+// ═══════════════════════════════════════════════════════════
+// STORAGE
+// ═══════════════════════════════════════════════════════════
+function saveUser(user) {
+  localStorage.setItem('ia_user_' + user.email, JSON.stringify(user));
+  localStorage.setItem('ia_current', user.email);
+}
+
+function loadUser(email) {
+  const data = localStorage.getItem('ia_user_' + email);
+  return data ? JSON.parse(data) : null;
+}
+
+function getUsers() {
+  const keys = Object.keys(localStorage).filter(k => k.startsWith('ia_user_'));
+  return keys.map(k => JSON.parse(localStorage.getItem(k)));
+}
+
+function createUserTemplate(username, email, password) {
+  return {
+    username, email, password,
+    level: 1, xp: 0, coins: 0,
+    streak: 0, lastLogin: '',
+    interviewsCompleted: 0,
+    questionsAnswered: 0,
+    averageScore: 0,
+    totalScore: 0,
+    totalXpEarned: 0,
+    totalCoinsEarned: 0,
+    maxScore: 0,
+    purchasedItems: ['theme-dark','title-rookie'],
+    equippedItems: { theme:'theme-dark', frame:'', title:'title-rookie', effect:'' },
+    achievements: [],
+    roleStats: {},
+    interviewHistory: [],
+    dailyChallengeDate: '',
+    dailyChallengeCompleted: false,
+  };
+}
+
+// ═══════════════════════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════════════════════
+function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-password').value;
+  const user = loadUser(email);
+  if (!user) return showNotif('❌','Account not found','Check your email or create an account');
+  if (user.password !== pass) return showNotif('❌','Wrong Password','Please try again');
+  loginSuccess(user);
+}
+
+function doRegister() {
+  const username = document.getElementById('reg-username').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pass = document.getElementById('reg-password').value;
+  const confirm = document.getElementById('reg-confirm').value;
+  if (!username || !email || !pass) return showNotif('⚠️','Missing Fields','Please fill all fields');
+  if (pass !== confirm) return showNotif('❌','Password Mismatch','Passwords do not match');
+  if (pass.length < 6) return showNotif('⚠️','Weak Password','Minimum 6 characters');
+  if (loadUser(email)) return showNotif('⚠️','Email Exists','Use a different email');
+  const user = createUserTemplate(username, email, pass);
+  saveUser(user);
+  loginSuccess(user);
+}
+
+function demoLogin() {
+  let user = loadUser('demo@interviewace.com');
+  if (!user) {
+    user = createUserTemplate('DemoUser', 'demo@interviewace.com', 'demo123');
+    user.level = 4; user.xp = 210; user.coins = 680;
+    user.streak = 5; user.interviewsCompleted = 12;
+    user.questionsAnswered = 47; user.averageScore = 74;
+    user.totalScore = 3478; user.totalXpEarned = 890;
+    user.totalCoinsEarned = 1540; user.maxScore = 98;
+    user.achievements = ['first-interview','streak-3'];
+    user.roleStats = {'Python Developer':4,'Frontend Developer':3,'Backend Developer':2,'Cybersecurity Analyst':2,'Full Stack Developer':1};
+    user.purchasedItems = ['theme-dark','title-rookie','frame-silver','theme-ocean'];
+    user.equippedItems = {theme:'theme-ocean',frame:'frame-silver',title:'title-rookie',effect:''};
+  }
+  loginSuccess(user);
+}
+
+function loginSuccess(user) {
+  // Check streak
+  const today = new Date().toDateString();
+  const yesterday = new Date(Date.now()-86400000).toDateString();
+  if (user.lastLogin === yesterday) {
+    user.streak += 1;
+    const streakRewards = {3:50,7:150,14:300,30:500,100:1000};
+    if (streakRewards[user.streak]) {
+      user.coins += streakRewards[user.streak];
+      user.totalCoinsEarned += streakRewards[user.streak];
+      setTimeout(()=>showNotif('🔥',`${user.streak}-Day Streak!`,`+${streakRewards[user.streak]} coins bonus!`),1000);
+    }
+  } else if (user.lastLogin !== today) {
+    if (user.lastLogin && user.lastLogin !== yesterday) user.streak = 1;
+    else if (!user.lastLogin) user.streak = 1;
+    // Daily login reward
+    user.coins += 20;
+    user.totalCoinsEarned += 20;
+  }
+  if (user.lastLogin !== today) {
+    user.dailyChallengeCompleted = false;
+    user.dailyChallengeDate = today;
+  }
+  user.lastLogin = today;
+  saveUser(user);
+  currentUser = user;
+  checkAchievements();
+  navigateTo('home');
+  renderHome();
+}
+
+function logout() {
+  localStorage.removeItem('ia_current');
+  currentUser = null;
+  navigateTo('login');
+}
+
+// ═══════════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════════
+function showScreen(id, direction = 'right') {
+  const prev = document.getElementById(currentScreen);
+  const next = document.getElementById(id);
+  if (!next) return;
+  if (prev) prev.classList.add('hidden');
+  next.classList.remove('hidden');
+  next.className = next.className.replace(/slide-in-\w+|fade-in/g,'').trim();
+  void next.offsetWidth;
+  next.classList.add(direction === 'right' ? 'slide-in-right' : direction === 'left' ? 'slide-in-left' : 'fade-in');
+  previousScreens.push(currentScreen);
+  currentScreen = id;
+}
+
+function navigateTo(id) {
+  const prev = document.getElementById(currentScreen);
+  const next = document.getElementById(id);
+  if (!next) return;
+  if (prev) prev.classList.add('hidden');
+  next.classList.remove('hidden');
+  next.className = next.className.replace(/slide-in-\w+|fade-in/g,'').trim();
+  void next.offsetWidth;
+  next.classList.add('fade-in');
+  previousScreens = [];
+  currentScreen = id;
+}
+
+function goBack() {
+  const prev = previousScreens.pop();
+  if (prev) {
+    const cur = document.getElementById(currentScreen);
+    const target = document.getElementById(prev);
+    if (cur) cur.classList.add('hidden');
+    if (target) {
+      target.classList.remove('hidden');
+      target.className = target.className.replace(/slide-in-\w+|fade-in/g,'').trim();
+      void target.offsetWidth;
+      target.classList.add('slide-in-left');
+    }
+    currentScreen = prev;
+  } else {
+    switchTab('home');
+  }
+}
+
+function switchTab(tab) {
+  // Manage nav UI
+  document.querySelectorAll('.nav-item').forEach(n=>{
+    n.classList.remove('active');
+    // find if it matches
+    const label = n.querySelector('.nav-label');
+    if(label && label.textContent.toLowerCase() === tab) n.classList.add('active');
+  });
+
+  const tabs = ['home','practice','shop','stats','profile','achievements'];
+  if (!tabs.includes(tab)) return;
+
+  const prev = document.getElementById(currentScreen);
+  const next = document.getElementById(tab);
+  if (!next) return;
+  if (prev) prev.classList.add('hidden');
+  next.classList.remove('hidden');
+  next.className = next.className.replace(/slide-in-\w+|fade-in/g,'').trim();
+  void next.offsetWidth;
+  next.classList.add('fade-in');
+  previousScreens = [];
+  currentScreen = tab;
+
+  // Render dynamic content
+  if (tab === 'home') renderHome();
+  else if (tab === 'practice') renderQuestionBank();
+  else if (tab === 'shop') renderShop();
+  else if (tab === 'stats') renderStats();
+  else if (tab === 'profile') renderProfile();
+  else if (tab === 'achievements') renderAchievements();
+}
+
+// ═══════════════════════════════════════════════════════════
+// HOME RENDER
+// ═══════════════════════════════════════════════════════════
+function renderHome() {
+  if (!currentUser) return;
+  const u = currentUser;
+  const hr = getGreeting();
+  document.getElementById('home-greeting').textContent = hr + ',';
+  document.getElementById('home-name').textContent = u.username;
+  document.getElementById('home-coins').textContent = u.coins.toLocaleString();
+  document.getElementById('home-level-badge').textContent = 'LV ' + u.level;
+  const xpForNext = u.level * 100;
+  const xpPct = Math.min((u.xp / xpForNext) * 100, 100);
+  document.getElementById('home-xp-text').textContent = u.xp + ' / ' + xpForNext;
+  document.getElementById('home-xp-bar').style.width = xpPct + '%';
+  document.getElementById('home-interviews').textContent = u.interviewsCompleted;
+  document.getElementById('home-avg-score').textContent = u.interviewsCompleted ? Math.round(u.averageScore) : '—';
+  document.getElementById('home-streak-display').textContent = u.streak + '🔥';
+  document.getElementById('home-avatar').textContent = u.username[0].toUpperCase();
+
+  // Daily challenge
+  renderDailyChallenge();
+
+  // Recent achievements
+  const achEl = document.getElementById('home-achievements');
+  const unlocked = ACHIEVEMENTS.filter(a=>u.achievements.includes(a.id));
+  if (unlocked.length === 0) {
+    achEl.innerHTML = '<div style="font-size:13px;color:var(--text2);padding:8px 0">Complete interviews to earn achievements!</div>';
+  } else {
+    achEl.innerHTML = unlocked.slice(-5).map(a=>`
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;min-width:64px;text-align:center">
+        <div style="width:56px;height:56px;border-radius:50%;background:rgba(245,200,66,0.1);border:1px solid rgba(245,200,66,0.3);display:flex;align-items:center;justify-content:center;font-size:24px">${a.icon}</div>
+        <div style="font-size:10px;color:var(--text2)">${a.name}</div>
+      </div>
+    `).join('');
+  }
+}
+
+function getGreeting() {
+  const h = new Date().getHours();
+  if (h < 12) return 'Good morning';
+  if (h < 17) return 'Good afternoon';
+  return 'Good evening';
+}
+
+// ═══════════════════════════════════════════════════════════
+// DAILY CHALLENGE
+// ═══════════════════════════════════════════════════════════
+function getDailyQuestion() {
+  const seed = new Date().toDateString();
+  let hash = 0;
+  for(let c of seed){hash=(hash<<5)-hash+c.charCodeAt(0);hash|=0;}
+  const idx = Math.abs(hash) % QUESTION_BANK.length;
+  return QUESTION_BANK[idx];
+}
+
+function renderDailyChallenge() {
+  if (!currentUser) return;
+  const q = getDailyQuestion();
+  document.getElementById('dc-preview').textContent = q.question.length > 80 ? q.question.slice(0,80)+'...' : q.question;
+  const statusEl = document.getElementById('dc-status');
+  if (currentUser.dailyChallengeCompleted) {
+    statusEl.innerHTML = '<span class="badge badge-green">✓ Completed Today</span>';
+  } else {
+    statusEl.innerHTML = '<span style="font-size:13px;color:var(--accent)">Tap to start → +100🪙 +50XP</span>';
+  }
+}
+
+function showDailyChallenge() {
+  const q = getDailyQuestion();
+  const body = document.getElementById('dc-body');
+  const completed = currentUser.dailyChallengeCompleted;
+
+  body.innerHTML = `
+    <div class="daily-challenge-card" style="margin-bottom:20px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <span style="font-size:28px">⚡</span>
+        <div>
+          <div style="font-weight:700;font-size:16px">Daily Challenge</div>
+          <div style="font-size:12px;color:var(--text2)">${new Date().toDateString()}</div>
+        </div>
+      </div>
+      <div class="badge badge-gold" style="margin-bottom:12px">+100 🪙  +50 XP</div>
+    </div>
+    <div class="question-card" style="margin-bottom:16px">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:8px">${q.role} · ${q.category} · ${q.difficulty}</div>
+      <div style="font-size:17px;font-weight:500;line-height:1.6">${q.question}</div>
+    </div>
+    ${completed ? `
+      <div class="card" style="text-align:center;padding:24px">
+        <div style="font-size:48px;margin-bottom:12px">✅</div>
+        <div style="font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:8px">Already Completed!</div>
+        <div style="color:var(--text2);font-size:14px">Come back tomorrow for a new challenge.</div>
+      </div>
+    ` : `
+      <textarea id="dc-answer" placeholder="Write your answer here..." style="min-height:160px;margin-bottom:12px"></textarea>
+      <button class="btn btn-primary" onclick="submitDailyChallenge()">Submit Challenge Answer</button>
+    `}
+  `;
+
+  showScreen('daily-challenge');
+}
+
+function submitDailyChallenge() {
+  const answer = document.getElementById('dc-answer').value.trim();
+  if (answer.length < 10) return showNotif('⚠️','Too Short','Write at least a few sentences!');
+  currentUser.dailyChallengeCompleted = true;
+  currentUser.coins += 100;
+  currentUser.totalCoinsEarned += 100;
+  currentUser.xp += 50;
+  currentUser.totalXpEarned += 50;
+  checkLevelUp();
+  checkAchievements();
+  saveUser(currentUser);
+  animateCoinPop(document.getElementById('dc-body'), 100);
+  showNotif('⚡','Daily Challenge Complete!','+100 coins & +50 XP earned!');
+  setTimeout(()=>{
+    showDailyChallenge();
+    renderHome();
+  }, 500);
+}
+
+// ═══════════════════════════════════════════════════════════
+// INTERVIEW FLOW
+// ═══════════════════════════════════════════════════════════
+function startInterview() {
+  rolePracticeMode = false;
+  // Show role selection
+  renderRoleCards('roles-grid', false);
+  showScreen('role-select');
+}
+
+function renderRoleCards(containerId, isPractice) {
+  const grid = document.getElementById(containerId);
+  grid.innerHTML = ROLES.map(r => `
+    <div class="role-card" onclick="selectRole('${r.name}',${isPractice})">
+      <div class="role-icon">${r.icon}</div>
+      <div class="role-name">${r.name}</div>
+      <div class="role-count">${QUESTION_BANK.filter(q=>q.role===r.name).length} questions</div>
+    </div>
+  `).join('');
+}
+
+function filterRoles() {
+  const s = document.getElementById('role-search').value.toLowerCase();
+  document.querySelectorAll('#roles-grid .role-card').forEach(card => {
+    const name = card.querySelector('.role-name').textContent.toLowerCase();
+    card.style.display = name.includes(s) ? '' : 'none';
+  });
+}
+
+function selectRole(role, isPractice) {
+  interviewState.role = role;
+  if (isPractice) {
+    startPracticeWithRole(role);
+    return;
+  }
+  // Show difficulty
+  document.getElementById('selected-role-display').innerHTML = `
+    <div style="display:flex;align-items:center;gap:8px">
+      <span style="font-size:24px">${ROLES.find(r=>r.name===role)?.icon||'💼'}</span>
+      <span>${role}</span>
+    </div>
+  `;
+  const difContainer = document.querySelector('.diff-cards');
+  difContainer.innerHTML = [
+    {name:'Beginner',icon:'🌱',desc:'Basic concepts, great for starters',xp:'+80 XP',color:'var(--green)'},
+    {name:'Intermediate',icon:'⚡',desc:'Mixed questions, some complexity',xp:'+120 XP',color:'var(--accent2)'},
+    {name:'Advanced',icon:'🔥',desc:'Hard questions, senior-level',xp:'+200 XP',color:'var(--red)'},
+  ].map(d=>`
+    <div class="diff-card" onclick="selectDifficulty('${d.name}')">
+      <div class="diff-icon">${d.icon}</div>
+      <div style="flex:1">
+        <div class="diff-name" style="color:${d.color}">${d.name}</div>
+        <div class="diff-desc">${d.desc}</div>
+      </div>
+      <div class="diff-xp"><span class="badge badge-green">${d.xp}</span></div>
+    </div>
+  `).join('');
+  showScreen('difficulty');
+}
+
+function selectDifficulty(diff) {
+  interviewState.difficulty = diff;
+  // Build question set
+  let pool = QUESTION_BANK.filter(q=>q.role===interviewState.role && q.difficulty===diff);
+  if (pool.length < 10) {
+    // supplement with other difficulties
+    const extras = QUESTION_BANK.filter(q=>q.role===interviewState.role && q.difficulty!==diff);
+    pool = [...pool, ...extras];
+  }
+  // Shuffle and take 10
+  pool = pool.sort(()=>Math.random()-0.5).slice(0,10);
+  // Always ensure variety of categories
+  interviewState.questions = pool;
+  interviewState.currentIndex = 0;
+  interviewState.answers = [];
+  interviewState.scores = [];
+  interviewState.startTime = Date.now();
+  showScreen('interview');
+  loadQuestion();
+}
+
+function loadQuestion() {
+  const q = interviewState.questions[interviewState.currentIndex];
+  if (!q) { endInterview(); return; }
+
+  const total = interviewState.questions.length;
+  const idx = interviewState.currentIndex + 1;
+
+  document.getElementById('q-counter').textContent = `Question ${idx} of ${total}`;
+  document.getElementById('q-progress').style.width = ((idx-1)/total*100)+'%';
+
+  const catColors = {Technical:'badge-purple',Behavioral:'badge-gold',Situational:'badge-blue',HR:'badge-green'};
+  document.getElementById('q-type-badge').className = `question-type-badge badge ${catColors[q.category]||'badge-purple'}`;
+  document.getElementById('q-type-badge').textContent = `${q.category} · ${q.difficulty}`;
+  document.getElementById('q-text').textContent = q.question;
+  document.getElementById('answer-area').value = '';
+  document.getElementById('char-count').textContent = '0';
+
+  // Start timer
+  clearInterval(interviewState.timerInterval);
+  interviewState.timeLeft = 120;
+  updateTimer();
+  interviewState.timerInterval = setInterval(()=>{
+    interviewState.timeLeft -= 1;
+    updateTimer();
+    if (interviewState.timeLeft <= 0) {
+      clearInterval(interviewState.timerInterval);
+      submitAnswer();
+    }
+  }, 1000);
+}
+
+function updateTimer() {
+  const t = interviewState.timeLeft;
+  const min = Math.floor(t/60).toString().padStart(2,'0');
+  const sec = (t%60).toString().padStart(2,'0');
+  const el = document.getElementById('q-timer');
+  el.textContent = `${min}:${sec}`;
+  el.className = 'q-timer' + (t <= 30 ? ' warning' : '');
+}
+
+function submitAnswer() {
+  clearInterval(interviewState.timerInterval);
+  const answer = document.getElementById('answer-area').value.trim();
+  const q = interviewState.questions[interviewState.currentIndex];
+  const score = scoreFeedback(answer, q);
+
+  interviewState.answers.push(answer);
+  interviewState.scores.push(score.score);
+
+  // Award XP and coins
+  currentUser.xp += 15;
+  currentUser.totalXpEarned += 15;
+  currentUser.coins += 10;
+  currentUser.totalCoinsEarned += 10;
+  currentUser.questionsAnswered += 1;
+  if (score.score > currentUser.maxScore) currentUser.maxScore = score.score;
+  checkLevelUp();
+
+  showFeedback(q, answer, score);
+}
+
+function skipQuestion() {
+  clearInterval(interviewState.timerInterval);
+  interviewState.answers.push('');
+  interviewState.scores.push(0);
+  goToNextQuestion();
+}
+
+function goToNextQuestion() {
+  interviewState.currentIndex += 1;
+  if (interviewState.currentIndex >= interviewState.questions.length) {
+    endInterview();
+  } else {
+    showScreen('interview', 'right');
+    loadQuestion();
+  }
+}
+
+function showFeedback(q, answer, score) {
+  showScreen('feedback');
+
+  // Score ring
+  drawScoreRing(score.score);
+  document.getElementById('score-number').textContent = score.score;
+  document.getElementById('fb-coins').textContent = 10;
+  document.getElementById('fb-xp').textContent = 15;
+
+  // STAR analysis for behavioral
+  const starEl = document.getElementById('star-analysis');
+  if (q.category === 'Behavioral') {
+    starEl.style.display = 'block';
+    const starGrid = document.getElementById('star-grid');
+    const detection = detectSTAR(answer);
+    starGrid.innerHTML = ['Situation','Task','Action','Result'].map(s=>`
+      <div class="star-item">
+        <div>
+          <div class="star-label">${s}</div>
+          <div class="star-sub">Detected</div>
+        </div>
+        <div class="star-check">${detection[s] ? '✅' : '❌'}</div>
+      </div>
+    `).join('');
+  } else {
+    starEl.style.display = 'none';
+  }
+
+  // Strengths
+  const strEl = document.getElementById('strengths-list');
+  strEl.innerHTML = score.strengths.map(s=>`
+    <div class="feedback-item"><div class="fi-icon" style="color:var(--green)">✓</div><div>${s}</div></div>
+  `).join('');
+
+  // Weaknesses
+  const wkEl = document.getElementById('weaknesses-list');
+  wkEl.innerHTML = score.weaknesses.map(w=>`
+    <div class="feedback-item"><div class="fi-icon" style="color:var(--red)">✗</div><div>${w}</div></div>
+  `).join('');
+
+  // Suggestions
+  const sugEl = document.getElementById('suggestions-list');
+  sugEl.innerHTML = score.suggestions.map(s=>`
+    <div class="feedback-item"><div class="fi-icon" style="color:var(--accent2)">→</div><div>${s}</div></div>
+  `).join('');
+
+  // Better answer
+  document.getElementById('better-answer').textContent = score.betterAnswer;
+}
+
+function drawScoreRing(score) {
+  const canvas = document.getElementById('score-canvas');
+  const ctx = canvas.getContext('2d');
+  const cx = 70, cy = 70, r = 56;
+  ctx.clearRect(0,0,140,140);
+  // Background ring
+  ctx.beginPath();
+  ctx.arc(cx,cy,r,0,Math.PI*2);
+  ctx.strokeStyle='rgba(255,255,255,0.08)';
+  ctx.lineWidth=10;
+  ctx.stroke();
+  // Score ring
+  const pct = score/100;
+  ctx.beginPath();
+  ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+Math.PI*2*pct);
+  const grad = ctx.createLinearGradient(0,0,140,0);
+  const c = score>=80?'#3dd68c':score>=60?'#5b8ef0':score>=40?'#f5c842':'#f05c5c';
+  grad.addColorStop(0,'#7c5cbf');
+  grad.addColorStop(1,c);
+  ctx.strokeStyle=grad;
+  ctx.lineWidth=10;
+  ctx.lineCap='round';
+  ctx.stroke();
+}
+
+function scoreFeedback(answer, q) {
+  const len = answer.length;
+  const hasContent = len > 20;
+  let score = 0;
+  if (len === 0) score = 0;
+  else if (len < 50) score = 25 + Math.floor(Math.random()*15);
+  else if (len < 150) score = 45 + Math.floor(Math.random()*20);
+  else if (len < 400) score = 65 + Math.floor(Math.random()*20);
+  else score = 75 + Math.floor(Math.random()*20);
+
+  // Keyword bonus
+  const keywords = ['example','because','result','achieved','improved','implemented','designed','led','managed','created'];
+  const matchCount = keywords.filter(k=>answer.toLowerCase().includes(k)).length;
+  score = Math.min(100, score + matchCount * 2);
+
+  const cat = q.category;
+  const fb = FEEDBACK_DB[cat] || FEEDBACK_DB.Technical;
+  const strCount = Math.min(2, Math.floor(score/40)+1);
+  const wkCount = Math.min(2, Math.floor((100-score)/40)+1);
+  const strengths = fb.strengths.sort(()=>Math.random()-0.5).slice(0,strCount);
+  const weaknesses = hasContent ? fb.weaknesses.sort(()=>Math.random()-0.5).slice(0,wkCount) : ['Answer was too short or not provided'];
+  const suggestions = fb.suggestions.sort(()=>Math.random()-0.5).slice(0,2);
+
+  const betterAnswers = {
+    Technical:`Start with a clear definition, then explain the mechanism or process, provide a concrete code or real-world example, mention best practices or edge cases, and end with when to use this concept.`,
+    Behavioral:`Use the STAR method: 1) Situation - set the context briefly, 2) Task - what was your responsibility, 3) Action - what specific steps did YOU take, 4) Result - quantify the outcome where possible.`,
+    Situational:`Structure your answer as: Immediate response (what you'd do first), Assessment (understanding the problem), Action Plan (steps to resolve), Communication (who you'd notify), and Prevention (how to avoid in future).`,
+    HR:`Align your answer with the company's values, show specific evidence from your experience, demonstrate enthusiasm for the role, and connect your unique skills to their specific needs.`,
+  };
+
+  return { score, strengths, weaknesses, suggestions, betterAnswer: betterAnswers[cat]||betterAnswers.Technical };
+}
+
+function detectSTAR(answer) {
+  const a = answer.toLowerCase();
+  return {
+    Situation: a.includes('when') || a.includes('was working') || a.includes('at my') || a.includes('situation'),
+    Task: a.includes('task') || a.includes('responsible') || a.includes('needed to') || a.includes('my role'),
+    Action: a.includes('i did') || a.includes('i took') || a.includes('decided') || a.includes('implemented') || a.includes('created') || a.includes('worked'),
+    Result: a.includes('result') || a.includes('outcome') || a.includes('achieved') || a.includes('improved') || a.includes('successfully') || a.includes('%'),
+  };
+}
+
+// ═══════════════════════════════════════════════════════════
+// END INTERVIEW
+// ═══════════════════════════════════════════════════════════
+function endInterview() {
+  clearInterval(interviewState.timerInterval);
+  const scores = interviewState.scores;
+  const validScores = scores.filter(s=>s>0);
+  const avgScore = validScores.length ? Math.round(validScores.reduce((a,b)=>a+b,0)/validScores.length) : 0;
+  const answered = scores.filter(s=>s>0).length;
+  const skipped = scores.filter(s=>s===0).length;
+  const elapsed = Math.round((Date.now()-interviewState.startTime)/60000);
+  const isPerfect = avgScore >= 90;
+
+  // XP & coins
+  let xpBonus = 100;
+  let coinBonus = 100;
+  if (isPerfect) { xpBonus += 100; coinBonus += 50; }
+
+  currentUser.xp += xpBonus;
+  currentUser.totalXpEarned += xpBonus;
+  currentUser.coins += coinBonus;
+  currentUser.totalCoinsEarned += coinBonus;
+  currentUser.interviewsCompleted += 1;
+  const roleStats = currentUser.roleStats || {};
+  roleStats[interviewState.role] = (roleStats[interviewState.role]||0)+1;
+  currentUser.roleStats = roleStats;
+  currentUser.totalScore = (currentUser.totalScore||0) + avgScore;
+  currentUser.averageScore = currentUser.interviewsCompleted ? Math.round(currentUser.totalScore/currentUser.interviewsCompleted) : 0;
+
+  // Save to history
+  currentUser.interviewHistory = currentUser.interviewHistory || [];
+  currentUser.interviewHistory.unshift({
+    date: new Date().toLocaleDateString(),
+    role: interviewState.role,
+    difficulty: interviewState.difficulty,
+    score: avgScore,
+    answered,
+    skipped,
+  });
+  if (currentUser.interviewHistory.length > 20) currentUser.interviewHistory.pop();
+
+  checkLevelUp();
+  checkAchievements();
+  saveUser(currentUser);
+
+  // Render results
+  const grade = avgScore>=90?'Outstanding! 🌟':avgScore>=80?'Great Performance! 🎉':avgScore>=70?'Good Job! 👍':avgScore>=60?'Keep Practicing! 💪':'Practice More! 📚';
+  const emoji = avgScore>=90?'🏆':avgScore>=80?'🎉':avgScore>=70?'😊':avgScore>=60?'💪':'📚';
+
+  document.getElementById('results-emoji').textContent = emoji;
+  document.getElementById('results-score').textContent = avgScore;
+  document.getElementById('results-grade').textContent = grade;
+  document.getElementById('res-correct').textContent = answered;
+  document.getElementById('res-skipped').textContent = skipped;
+  document.getElementById('res-time').textContent = elapsed + 'm';
+  document.getElementById('res-coins').textContent = coinBonus;
+  document.getElementById('res-xp').textContent = xpBonus;
+
+  if (isPerfect) launchConfetti();
+  showScreen('results');
+
+  // Render review
+  renderReview();
+}
+
+function renderReview() {
+  const container = document.getElementById('review-list');
+  container.innerHTML = interviewState.questions.map((q,i)=>`
+    <div class="card" style="margin-bottom:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <span style="font-size:12px;color:var(--text2)">Q${i+1} · ${q.category}</span>
+        <span class="badge ${interviewState.scores[i]>=80?'badge-green':interviewState.scores[i]>=60?'badge-blue':'badge-red'}">${interviewState.scores[i]||0}/100</span>
+      </div>
+      <div style="font-size:14px;font-weight:500;margin-bottom:12px;line-height:1.5">${q.question}</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.6;background:var(--card);padding:12px;border-radius:var(--radius-sm)">
+        ${interviewState.answers[i]||'<em>Skipped</em>'}
+      </div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// QUESTION BANK
+// ═══════════════════════════════════════════════════════════
+function renderQuestionBank() {
+  filterQuestionBank();
+}
+
+function filterQBCategory(el, cat) {
+  document.querySelectorAll('#qb-category-tabs .tag').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  qbState.category = cat;
+  filterQuestionBank();
+}
+
+function filterQBRole(el, role) {
+  document.querySelectorAll('#qb-role-tabs .tag').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  qbState.role = role;
+  filterQuestionBank();
+}
+
+function filterQuestionBank() {
+  qbState.search = document.getElementById('qb-search')?.value.toLowerCase()||'';
+  let qs = QUESTION_BANK;
+  if (qbState.category !== 'All') qs = qs.filter(q=>q.category===qbState.category);
+  if (qbState.role !== 'All') qs = qs.filter(q=>q.role===qbState.role);
+  if (qbState.search) qs = qs.filter(q=>q.question.toLowerCase().includes(qbState.search)||q.role.toLowerCase().includes(qbState.search));
+
+  const list = document.getElementById('qb-list');
+  if (!list) return;
+  if (qs.length === 0) {
+    list.innerHTML = '<div class="empty-state"><div class="es-icon">🔍</div><h3>No questions found</h3><p>Try different filters</p></div>';
+    return;
+  }
+  list.innerHTML = qs.slice(0,50).map(q=>`
+    <div class="qb-card">
+      <div class="qb-q">${q.question}</div>
+      <div class="qb-tags">
+        <span class="tag active" style="cursor:default">${q.role}</span>
+        <span class="badge ${q.category==='Technical'?'badge-purple':q.category==='Behavioral'?'badge-gold':q.category==='Situational'?'badge-blue':'badge-green'}">${q.category}</span>
+        <span class="badge badge-red" style="font-size:10px">${q.difficulty}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// SHOP
+// ═══════════════════════════════════════════════════════════
+function renderShop() {
+  if (!currentUser) return;
+  document.getElementById('shop-coins').textContent = currentUser.coins.toLocaleString();
+  const grid = document.getElementById('shop-grid');
+  let items = SHOP_ITEMS;
+  if (shopFilter !== 'all') items = items.filter(i=>i.category===shopFilter);
+
+  grid.innerHTML = items.map(item=>{
+    const owned = currentUser.purchasedItems.includes(item.id);
+    const equipped = Object.values(currentUser.equippedItems||{}).includes(item.id);
+    return `
+      <div class="shop-item ${owned?(equipped?'equipped':'owned'):''}" onclick="handleShopItem('${item.id}')">
+        <div class="item-icon">${item.icon}</div>
+        <div class="item-name">${item.name}</div>
+        <div style="font-size:10px;color:var(--text2)">${item.desc}</div>
+        ${owned
+          ? `<div class="badge ${equipped?'badge-gold':'badge-green'}">${equipped?'Equipped':'Owned'}</div>`
+          : `<div class="item-price"><span>🪙</span> <strong>${item.price}</strong></div>`
+        }
+      </div>
+    `;
+  }).join('');
+}
+
+function filterShop(el, cat) {
+  document.querySelectorAll('.shop-tabs .tag').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  shopFilter = cat;
+  renderShop();
+}
+
+function handleShopItem(itemId) {
+  const item = SHOP_ITEMS.find(i=>i.id===itemId);
+  if (!item) return;
+  const owned = currentUser.purchasedItems.includes(itemId);
+
+  if (owned) {
+    // Equip
+    const cat = item.category === 'themes' ? 'theme' : item.category === 'frames' ? 'frame' : item.category === 'titles' ? 'title' : 'effect';
+    currentUser.equippedItems[cat] = itemId;
+    if (item.category === 'themes') applyTheme(itemId);
+    saveUser(currentUser);
+    renderShop();
+    showNotif('✨','Item Equipped',`${item.name} is now active!`);
+    return;
+  }
+
+  if (currentUser.coins < item.price) {
+    showNotif('🪙','Not Enough Coins',`You need ${item.price - currentUser.coins} more coins`);
+    return;
+  }
+
+  // Confirm purchase
+  currentUser.coins -= item.price;
+  currentUser.purchasedItems.push(itemId);
+  const cat = item.category === 'themes' ? 'theme' : item.category === 'frames' ? 'frame' : item.category === 'titles' ? 'title' : 'effect';
+  currentUser.equippedItems[cat] = itemId;
+  if (item.category === 'themes') applyTheme(itemId);
+  checkAchievements();
+  saveUser(currentUser);
+  renderShop();
+  animateCoinPop(document.getElementById('shop-grid'), -item.price);
+  showNotif('🛍️','Purchase Successful!',`${item.name} unlocked & equipped!`);
+}
+
+function applyTheme(themeId) {
+  const themes = {
+    'theme-dark': {'--bg':'#0a0a12','--bg2':'#12121f','--accent':'#7c5cbf','--accent2':'#5b8ef0'},
+    'theme-ocean': {'--bg':'#020d1a','--bg2':'#041525','--accent':'#0d7a9e','--accent2':'#1eb5df'},
+    'theme-hacker': {'--bg':'#000800','--bg2':'#001200','--accent':'#00ff41','--accent2':'#39ff14'},
+    'theme-space': {'--bg':'#03001a','--bg2':'#06002c','--accent':'#9b59b6','--accent2':'#e056d7'},
+    'theme-neon': {'--bg':'#0a0010','--bg2':'#130020','--accent':'#ff006e','--accent2':'#ff9900'},
+  };
+  const t = themes[themeId];
+  if (!t) return;
+  const root = document.documentElement;
+  Object.entries(t).forEach(([k,v])=>root.style.setProperty(k,v));
+}
+
+// ═══════════════════════════════════════════════════════════
+// ACHIEVEMENTS
+// ═══════════════════════════════════════════════════════════
+function checkAchievements() {
+  if (!currentUser) return;
+  ACHIEVEMENTS.forEach(a=>{
+    if (!currentUser.achievements.includes(a.id) && a.condition(currentUser)) {
+      currentUser.achievements.push(a.id);
+      showAchievementPopup(a);
+    }
+  });
+  saveUser(currentUser);
+}
+
+function showAchievementPopup(ach) {
+  const popup = document.getElementById('achievement-popup');
+  document.getElementById('ach-popup-icon').textContent = ach.icon;
+  document.getElementById('ach-popup-name').textContent = ach.name;
+  popup.classList.add('show');
+  setTimeout(()=>popup.classList.remove('show'), 3500);
+}
+
+function renderAchievements() {
+  if (!currentUser) return;
+  const unlocked = currentUser.achievements.length;
+  const total = ACHIEVEMENTS.length;
+  document.getElementById('ach-stats').innerHTML = `
+    <div class="level-card">
+      <div style="font-size:14px;color:var(--text2);margin-bottom:8px">Progress</div>
+      <div style="font-family:var(--font-display);font-size:28px;font-weight:800;margin-bottom:10px">${unlocked} / ${total}</div>
+      <div class="progress-track"><div class="progress-fill" style="width:${(unlocked/total*100).toFixed(0)}%"></div></div>
+    </div>
+  `;
+
+  const grid = document.getElementById('ach-grid');
+  grid.innerHTML = ACHIEVEMENTS.map(a=>{
+    const has = currentUser.achievements.includes(a.id);
+    return `
+      <div class="ach-card ${has?'unlocked':'locked'}">
+        <div class="ach-emoji">${a.icon}</div>
+        <div class="ach-name">${a.name}</div>
+        <div class="ach-desc">${a.desc}</div>
+        ${has ? '<span class="badge badge-gold" style="font-size:10px">Unlocked</span>' : '<span style="font-size:10px;color:var(--text3)">Locked</span>'}
+      </div>
+    `;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// STATS
+// ═══════════════════════════════════════════════════════════
+function renderStats() {
+  if (!currentUser) return;
+  const u = currentUser;
+  const hist = u.interviewHistory || [];
+
+  let html = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+      ${[
+        {icon:'🎙️',val:u.interviewsCompleted,label:'Interviews'},
+        {icon:'❓',val:u.questionsAnswered||0,label:'Questions'},
+        {icon:'📈',val:u.interviewsCompleted?Math.round(u.averageScore)+'%':'—',label:'Avg Score'},
+        {icon:'⭐',val:u.totalXpEarned||0,label:'Total XP'},
+        {icon:'🪙',val:(u.totalCoinsEarned||0).toLocaleString(),label:'Coins Earned'},
+        {icon:'🔥',val:u.streak,label:'Day Streak'},
+      ].map(s=>`
+        <div class="stat-big-card">
+          <div class="stat-big-icon">${s.icon}</div>
+          <div>
+            <div class="stat-big-val">${s.val}</div>
+            <div class="stat-big-label">${s.label}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  // Role breakdown
+  if (Object.keys(u.roleStats||{}).length > 0) {
+    html += `
+      <div class="chart-card">
+        <h3>Interviews by Role</h3>
+        ${Object.entries(u.roleStats).map(([role,count])=>`
+          <div style="margin-bottom:12px">
+            <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px">
+              <span style="color:var(--text2)">${role}</span>
+              <span style="font-weight:600">${count}</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width:${Math.min(100,(count/Math.max(...Object.values(u.roleStats)))*100).toFixed(0)}%"></div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  // Interview history
+  if (hist.length > 0) {
+    html += `
+      <div class="chart-card">
+        <h3>Recent Interviews</h3>
+        ${hist.slice(0,10).map(h=>`
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--card-border)">
+            <div>
+              <div style="font-size:13px;font-weight:600">${h.role}</div>
+              <div style="font-size:11px;color:var(--text2)">${h.date} · ${h.difficulty}</div>
+            </div>
+            <span class="badge ${h.score>=80?'badge-green':h.score>=60?'badge-blue':'badge-red'}">${h.score}/100</span>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  // Canvas chart for last 5 scores
+  if (hist.length >= 2) {
+    html += `
+      <div class="chart-card">
+        <h3>Score Trend</h3>
+        <canvas id="trend-chart" width="370" height="160" style="width:100%;max-width:370px"></canvas>
+      </div>
+    `;
+  }
+
+  document.getElementById('stats-content').innerHTML = html;
+
+  // Draw chart if exists
+  if (hist.length >= 2) {
+    setTimeout(()=>drawTrendChart(hist.slice(0,8).reverse()), 100);
+  }
+}
+
+function drawTrendChart(history) {
+  const canvas = document.getElementById('trend-chart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const pad = 20;
+  const scores = history.map(h=>h.score);
+  const max = 100, min = 0;
+
+  ctx.clearRect(0,0,W,H);
+
+  // Grid lines
+  [25,50,75,100].forEach(y=>{
+    const gy = H - pad - ((y/(max-min)) * (H-pad*2));
+    ctx.beginPath();
+    ctx.moveTo(pad, gy); ctx.lineTo(W-pad, gy);
+    ctx.strokeStyle='rgba(255,255,255,0.05)';
+    ctx.lineWidth=1;
+    ctx.stroke();
+    ctx.fillStyle='rgba(255,255,255,0.3)';
+    ctx.font='10px DM Sans';
+    ctx.fillText(y, 2, gy+4);
+  });
+
+  const pts = scores.map((s,i)=>{
+    const x = pad + (i/(scores.length-1)) * (W-pad*2);
+    const y = H - pad - ((s/max) * (H-pad*2));
+    return {x,y};
+  });
+
+  // Area fill
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, H-pad);
+  pts.forEach(p=>ctx.lineTo(p.x,p.y));
+  ctx.lineTo(pts[pts.length-1].x, H-pad);
+  ctx.closePath();
+  const grad = ctx.createLinearGradient(0,0,0,H);
+  grad.addColorStop(0,'rgba(124,92,191,0.3)');
+  grad.addColorStop(1,'rgba(124,92,191,0)');
+  ctx.fillStyle=grad;
+  ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  pts.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
+  ctx.strokeStyle='#7c5cbf';
+  ctx.lineWidth=2;
+  ctx.stroke();
+
+  // Dots
+  pts.forEach(p=>{
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,5,0,Math.PI*2);
+    ctx.fillStyle='#7c5cbf';
+    ctx.fill();
+    ctx.strokeStyle='var(--bg)';
+    ctx.lineWidth=2;
+    ctx.stroke();
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// PROFILE
+// ═══════════════════════════════════════════════════════════
+function renderProfile() {
+  if (!currentUser) return;
+  const u = currentUser;
+  const xpForNext = u.level * 100;
+  const equippedTitle = SHOP_ITEMS.find(i=>i.id===u.equippedItems?.title);
+  const equippedFrame = SHOP_ITEMS.find(i=>i.id===u.equippedItems?.frame);
+
+  const html = `
+    <div class="profile-hero">
+      <div class="avatar lg" style="${equippedFrame?'box-shadow:0 0 0 4px var(--gold)':''}">${u.username[0].toUpperCase()}</div>
+      <div class="profile-name">${u.username}</div>
+      ${equippedTitle ? `<div class="badge badge-gold">${equippedTitle.icon} ${equippedTitle.name}</div>` : ''}
+      <div class="profile-level">Level ${u.level} · ${u.xp} / ${xpForNext} XP</div>
+      <div style="width:100%;margin-top:8px"><div class="progress-track"><div class="progress-fill" style="width:${Math.min(100,(u.xp/xpForNext*100)).toFixed(0)}%"></div></div></div>
+    </div>
+
+    <div class="profile-stats-grid">
+      <div class="stat-card"><div class="stat-val">${u.interviewsCompleted}</div><div class="stat-label">Interviews</div></div>
+      <div class="stat-card"><div class="stat-val">${u.interviewsCompleted?Math.round(u.averageScore)+'%':'—'}</div><div class="stat-label">Avg Score</div></div>
+      <div class="stat-card"><div class="stat-val">${u.streak}🔥</div><div class="stat-label">Streak</div></div>
+    </div>
+
+    <div style="margin-bottom:20px">
+      <div class="section-header"><div class="section-title">Coins & XP</div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="stat-card"><div class="stat-val">🪙 ${u.coins.toLocaleString()}</div><div class="stat-label">Balance</div></div>
+        <div class="stat-card"><div class="stat-val">⭐ ${u.totalXpEarned||0}</div><div class="stat-label">Total XP</div></div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:20px">
+      <div class="section-header">
+        <div class="section-title">Achievements</div>
+        <button class="btn btn-ghost" style="font-size:13px;color:var(--accent)" onclick="switchTab('achievements')">See all</button>
+      </div>
+      <div style="font-size:14px;color:var(--text2)">${u.achievements.length} / ${ACHIEVEMENTS.length} unlocked</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+        ${ACHIEVEMENTS.filter(a=>u.achievements.includes(a.id)).map(a=>`
+          <div style="font-size:28px" title="${a.name}">${a.icon}</div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div style="margin-bottom:20px">
+      <div class="section-title">Owned Items</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        ${SHOP_ITEMS.filter(i=>u.purchasedItems.includes(i.id)).map(i=>`
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;min-width:52px">
+            <div style="font-size:28px">${i.icon}</div>
+            <div style="font-size:10px;color:var(--text2);text-align:center">${i.name}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div style="margin-bottom:20px">
+      <div class="section-title">Weekly Streak</div>
+      <div class="streak-days">
+        ${['M','T','W','T','F','S','S'].map((d,i)=>{
+          const dayActive = i < (u.streak % 7);
+          return `<div class="streak-day ${dayActive?'done':''}">
+            <div class="sd-circle">${dayActive?'🔥':d}</div>
+            <div class="sd-label">${d}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <button class="btn btn-secondary" onclick="showLeaderboard()" style="margin-bottom:12px">🏆 View Leaderboard</button>
+    <button class="btn btn-ghost" style="color:var(--red)" onclick="logout()">Logout</button>
+  `;
+
+  document.getElementById('profile-content').innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════════
+// LEADERBOARD
+// ═══════════════════════════════════════════════════════════
+function showLeaderboard() {
+  // Build from all users + mock data
+  const realUsers = getUsers();
+  const mockUsers = [
+    {username:'CodeWizard99',level:18,xp:1740,coins:3200,interviewsCompleted:87},
+    {username:'TechMaster',level:15,xp:1380,coins:2800,interviewsCompleted:64},
+    {username:'DevGuru',level:12,xp:1120,coins:2100,interviewsCompleted:51},
+    {username:'AlgoQueen',level:10,xp:880,coins:1600,interviewsCompleted:38},
+    {username:'BackendKing',level:8,xp:720,coins:1200,interviewsCompleted:29},
+    {username:'PythonNinja',level:6,xp:540,coins:900,interviewsCompleted:22},
+    {username:'SecurityAce',level:5,xp:420,coins:750,interviewsCompleted:18},
+  ];
+  const combined = [...realUsers.map(u=>({...u,isYou:currentUser&&u.email===currentUser.email})), ...mockUsers]
+    .sort((a,b)=>(b.xp||0)-(a.xp||0))
+    .slice(0,10);
+
+  const rankEmoji = ['🥇','🥈','🥉'];
+  const html = `
+    <div class="section-title" style="margin-bottom:16px">🏆 Top Players</div>
+    <div class="leaderboard-list">
+      ${combined.map((u,i)=>`
+        <div class="lb-item ${u.isYou?'you':''}">
+          <div class="lb-rank ${i===0?'gold':i===1?'silver':i===2?'bronze':''}">${i<3?rankEmoji[i]:'#'+(i+1)}</div>
+          <div class="avatar" style="width:36px;height:36px;font-size:14px">${(u.username||'?')[0].toUpperCase()}</div>
+          <div style="flex:1">
+            <div class="lb-name">${u.username||'Anonymous'}${u.isYou?' (You)':''}</div>
+            <div style="font-size:11px;color:var(--text2)">Level ${u.level||1} · ${u.interviewsCompleted||0} interviews</div>
+          </div>
+          <div>
+            <div class="lb-xp" style="font-weight:600;color:var(--accent)">${(u.xp||0).toLocaleString()} XP</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  document.getElementById('lb-content').innerHTML = html;
+  showScreen('leaderboard');
+}
+
+// ═══════════════════════════════════════════════════════════
+// LEVEL UP
+// ═══════════════════════════════════════════════════════════
+function checkLevelUp() {
+  if (!currentUser) return;
+  const xpNeeded = currentUser.level * 100;
+  if (currentUser.xp >= xpNeeded) {
+    currentUser.xp -= xpNeeded;
+    currentUser.level += 1;
+    currentUser.coins += 50;
+    currentUser.totalCoinsEarned += 50;
+    saveUser(currentUser);
+    setTimeout(()=>{
+      showNotif('⬆️','Level Up!',`You reached Level ${currentUser.level}! +50 bonus coins`);
+      launchConfetti();
+    }, 500);
+    checkLevelUp(); // Cascade
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// NOTIFICATIONS
+// ═══════════════════════════════════════════════════════════
+function showNotif(icon, title, sub) {
+  const container = document.getElementById('notif-container');
+  const toast = document.createElement('div');
+  toast.className = 'notif-toast';
+  toast.innerHTML = `
+    <div class="notif-icon">${icon}</div>
+    <div><div class="notif-text">${title}</div><div class="notif-sub">${sub}</div></div>
+  `;
+  container.appendChild(toast);
+  setTimeout(()=>toast.remove(), 3200);
+}
+
+// ═══════════════════════════════════════════════════════════
+// ANIMATIONS
+// ═══════════════════════════════════════════════════════════
+function animateCoinPop(parent, amount) {
+  const el = document.createElement('div');
+  el.className = 'coin-pop';
+  el.textContent = (amount > 0 ? '+' : '') + amount + '🪙';
+  el.style.left = '50%';
+  el.style.top = '40%';
+  el.style.color = amount > 0 ? 'var(--gold)' : 'var(--red)';
+  parent.style.position = 'relative';
+  parent.appendChild(el);
+  setTimeout(()=>el.remove(), 1100);
+}
+
+function launchConfetti() {
+  const colors = ['#7c5cbf','#5b8ef0','#f5c842','#3dd68c','#f05c5c'];
+  const app = document.getElementById('app');
+  for (let i=0; i<40; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random()*100 + '%';
+    piece.style.top = '-10px';
+    piece.style.background = colors[Math.floor(Math.random()*colors.length)];
+    piece.style.animationDuration = (1.5+Math.random()*2) + 's';
+    piece.style.animationDelay = Math.random()*0.5 + 's';
+    app.appendChild(piece);
+    setTimeout(()=>piece.remove(), 4000);
+  }
+}
+
+// Button ripple effect
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.btn, .role-card, .diff-card, .shop-item, .qb-card, .quick-action-card');
+  if (!btn) return;
+  const ripple = document.createElement('div');
+  const rect = btn.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height) * 2;
+  ripple.className = 'ripple';
+  ripple.style.width = ripple.style.height = size + 'px';
+  ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+  ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
+  btn.appendChild(ripple);
+  setTimeout(()=>ripple.remove(), 600);
+});
+
+// Char counter
+document.addEventListener('input', e => {
+  if (e.target.id === 'answer-area') {
+    document.getElementById('char-count').textContent = e.target.value.length;
+  }
+});
+
+// ═══════════════════════════════════════════════════════════
+// PRACTICE MODE (role select from practice tab)
+// ═══════════════════════════════════════════════════════════
+function startPracticeWithRole(role) {
+  interviewState.role = role;
+  // Same as normal flow but from practice tab
+  document.getElementById('selected-role-display').innerHTML = `
+    <div style="display:flex;align-items:center;gap:8px">
+      <span style="font-size:24px">${ROLES.find(r=>r.name===role)?.icon||'💼'}</span>
+      <span>${role}</span>
+    </div>
+  `;
+  const difContainer = document.querySelector('.diff-cards');
+  difContainer.innerHTML = [
+    {name:'Beginner',icon:'🌱',desc:'Basic concepts, great for starters',xp:'+80 XP',color:'var(--green)'},
+    {name:'Intermediate',icon:'⚡',desc:'Mixed questions, some complexity',xp:'+120 XP',color:'var(--accent2)'},
+    {name:'Advanced',icon:'🔥',desc:'Hard questions, senior-level',xp:'+200 XP',color:'var(--red)'},
+  ].map(d=>`
+    <div class="diff-card" onclick="selectDifficulty('${d.name}')">
+      <div class="diff-icon">${d.icon}</div>
+      <div style="flex:1">
+        <div class="diff-name" style="color:${d.color}">${d.name}</div>
+        <div class="diff-desc">${d.desc}</div>
+      </div>
+      <div class="diff-xp"><span class="badge badge-green">${d.xp}</span></div>
+    </div>
+  `).join('');
+  showScreen('difficulty');
+}
+
+// Register role-select-practice render
+function renderRolePractice() {
+  renderRoleCards('roles-grid-practice', true);
+  showScreen('role-select-practice');
+}
+
+// Override the showScreen for role-select-practice
+const _origShowScreen = showScreen;
+
+// ═══════════════════════════════════════════════════════════
+// PARTICLES
+// ═══════════════════════════════════════════════════════════
+function createParticles() {
+  const container = document.getElementById('particles');
+  for (let i=0; i<15; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random()*100+'%';
+    p.style.animationDuration = (6+Math.random()*12)+'s';
+    p.style.animationDelay = Math.random()*5+'s';
+    p.style.width = p.style.height = (1+Math.random()*3)+'px';
+    p.style.opacity = Math.random()*0.6;
+    container.appendChild(p);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+function init() {
+  createParticles();
+
+  // Render all role grids
+  renderRoleCards('roles-grid', false);
+
+  // Render question bank initial
+  filterQuestionBank();
+
+  // Check auto-login
+  setTimeout(()=>{
+    const savedEmail = localStorage.getItem('ia_current');
+    if (savedEmail) {
+      const user = loadUser(savedEmail);
+      if (user) {
+        loginSuccess(user);
+        return;
+      }
+    }
+    showScreen('login', 'fade');
+  }, 2200);
+}
+
+// Apply saved theme on load
+function applyStoredTheme() {
+  const email = localStorage.getItem('ia_current');
+  if (!email) return;
+  const user = loadUser(email);
+  if (user?.equippedItems?.theme) applyTheme(user.equippedItems.theme);
+}
+
+applyStoredTheme();
+window.addEventListener('load', init);
+</script>
+</body>
+</html>
